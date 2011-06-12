@@ -8,7 +8,7 @@ echo WELCOME.'<br>';
 
 
 $db = new $settings->database();
-$db->query("select * from projects");
+$db->query("select * from paginas");
 echo '<br>Number of results = '.$db->num_rows();
 $db->debug('result');
 

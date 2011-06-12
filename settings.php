@@ -12,7 +12,7 @@ class Settings {
     var $dbhostname = "localhost";
     var $dbusername = "root";
     var $dbpassword = "";
-    var $dbase = "framework";
+    var $dbase = "hector_cms";
     
     /**
      * Parametros de una base de datos SQLite
