@@ -1,6 +1,6 @@
 <?php
 /**
- * SQLite Database Class para franstelecom_framework
+ * SQLite Database Class para FilaDeAtras Framework
  * 
  * Permite la creación de conexiones con la base de datos, tiene metodos para consultar y volcar resultados.
  *
@@ -9,7 +9,7 @@
  * @package Database
  * @subpackage SQLite
  */
-class SQLite extends Database
+class sqlite
 {
     /**
      * Resource de la base de datos
@@ -36,7 +36,7 @@ class SQLite extends Database
     * Constructor para crea la conexión con la base de datos.
     *
     */
-    public function conectar()
+    public function __construct()
     {
         $settings = new Settings;
         $this->db = sqlite_open($settings->dbfile, 0666, $error);
@@ -59,88 +59,7 @@ class SQLite extends Database
         $this->result = @ sqlite_query($this->db, $string);
     }
     
-    
-    /**
-    * Esta función permite hacer una selección de una tabla
-    *
-    * Por ejemplo:
-    * <pre>$Database->select('*','tabla1','nombre=\'frans\'');</pre>
-    * 
-    * @param string $fields Los campos que se van a seleccionar de la tabla
-    * @param string $table_name La tabla de la que se van a seleccionar los datos
-    * @param string $filters Los parametros para filtrar los resultados (where, limit, ...)
-    */
-    public function select($fields, $table_name, $filters){
-        if(empty($table_name)||empty($fields)) die ('Query Incorrecta');
-		
-		
-        $this->query = "Select rowid as id,".$fields." from ".$table_name;
-        
-        if (!empty($filters)) $this->query =  $this->query." where ".$filters;
-        
-        $this->result =  @ sqlite_query ($this->db, $this->query);
-    }
-    
-    /**
-    * Esta función permite insertar datos en una tabla
-    *
-    * Por ejemplo:
-    * <pre>$Database->insert('tabla1','nombre,apellidos','\'minombre\',\'miapellido\'');</pre>
-    * 
-    * Hay que tener cuidado con las comillas si se trata de una cadena de texto es obligatorio rodearlo de comillas
-    * 
-    * Por ejemplo:
-    *<pre>$values = "'minombre','miapellido',2"
-    *$values = '\'minombre\',\'miapellido\',2'</pre>
-    *
-    * @param string $table_name La tabla en la que se van a insertar los datos
-    * @param string $fields Especifica los nombres de los campos que se van a especificar en $values
-    * @param string $values Especifica los valores que van a ser insertados
-    */
-    public function insert($table_name, $fields, $values){
-        if(empty($table_name)||empty($fields)) die ('Query Incorrecta');
-        
-        $this->query = 'INSERT INTO \''.$table_name.'\' ('.$fields.') values ('.$values.')';
-        
-        $this->result =   sqlite_query ($this->db, $this->query);
-    }
-    
-    /**
-    * Esta función permite actualizar valores de una tabla
-    * 
-    * Por ejemplo:
-    * <pre>$Database->update('tabla1','nombre','\'minombre\'','where id=1');</pre>
-    *
-    * @param string $table_name La tabla en la que se van a actualizar los datos
-    * @param string $column El nombre de la columna que tiene los datos
-    * @param string $value El valor por el cual se va a substituir
-    * @param string $filters Los filtros necesarios (where, limit, ...)
-    */
-    public function update($table_name, $column, $value, $filters){
-        if(empty($table_name)||empty($column)||empty($filters)) die ('Query Incorrecta');
-        
-        $this->query = 'update '.$table_name.' set '.$column.'=\''.$value.'\' where '.$this->transform($filters);
-        
-        $this->result =  @ sqlite_query ($this->db, $this->query);
-    }
-    
-    /**
-    * Esta función permite borrar valores de una tabla
-    *
-    * Por ejemplo:
-    * <pre>$Database->delete('tabla1','nombre=\'fran\'');</pre>
-    *
-    *
-    * @param string $table_name La tabla de la que se borrará el valor
-    * @param string $filters Los filtros necesarios (where, limit, ...)
-    */
-    public function delete($table_name, $filters){
-        if(empty($table_name)||empty($filters)) die ('Query Incorrecta');
-		
-            $this->query = 'delete from '.$table_name.' where '.$this->transform($filters);
-            
-            $this->result =  @ sqlite_query ($this->db, $this->query);
-    }
+   
     
     /**
      * @deprecated
@@ -172,21 +91,7 @@ class SQLite extends Database
         return $rows;
     }
     
-    /**
-    * Función que permite crear tablas
-    *
-    * Por ejemplo
-    * <pre>
-    * $db->createTable('test','nombre varchar(50), apellidos varchar(100)');
-    * </pre>
-    *NOTA: en SQLite el campo id no hace falta
-    * @param string $name El nombre de la tabla
-    * @param string $fields Los campos necesarios separados por comas
-   */
-   public function createTable($name, $fields){
-        $this->query('CREATE TABLE \''.$name.'\' ('.$fields.')');
-   }
-    
+
     /**
     * Función que retorna un objeto del tipo stdClass que contiene los datos antes pedidos mediante cualquier función de consulta
     *
@@ -252,7 +157,7 @@ class SQLite extends Database
     /**
     * Función que se desconecta de la base de datos
    */
-    public function desconectar(){
+    public function __destruct(){
         sqlite_close($this->db);
     }
     

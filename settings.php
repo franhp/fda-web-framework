@@ -12,12 +12,16 @@ class Settings {
     var $dbhostname = "localhost";
     var $dbusername = "root";
     var $dbpassword = "";
-    var $dbtable = "framework";
+    var $dbase = "framework";
     
     /**
      * Parametros de una base de datos SQLite
      */
     //var $dbfile = "database/database.sqlite";
+    
+    public function __construct(){
+		require_once('includes/database.'.$this->database.'.class.php');
+    }
 }
 
 ?>

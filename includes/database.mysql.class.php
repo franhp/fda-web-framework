@@ -1,6 +1,6 @@
 <?php
 /**
- * MySQL Database Class para franstelecom_framework
+ * MySQL Database Class para FilaDeAtras Framework
  * 
  * Permite la creación de conexiones con la base de datos, tiene metodos para consultar y volcar resultados.
  *
@@ -10,7 +10,7 @@
  * @package Database
  * @subpackage MySQL
  */
-class MySQL extends Database
+class mysql
 {
 	
 	/**
@@ -33,11 +33,11 @@ class MySQL extends Database
 	 * Constructor para crea la conexión con la base de datos.
 	 *
 	 */
-	public function conectar()
+	public function __construct()
 	{
 		$settings = new Settings;
 		@ mysql_connect($settings->dbhostname,$settings->dbusername, $settings->dbpassword) or die ('Error conectando a mysql');
-		@ mysql_selectdb($settings->dbtable) or die ('Error conectando a mysql');
+		@ mysql_selectdb($settings->dbase) or die ('Error conectando a mysql');
 	}
 
 	
@@ -53,7 +53,7 @@ class MySQL extends Database
 	public function query($query){
 		$this->query = $query;
 		
-		$this->result =  @ mysql_query (mysql_real_escape_string($this->query));
+		$this->result =  @ mysql_query ($this->query);
 	}
 	
 
@@ -156,7 +156,7 @@ class MySQL extends Database
 	/**
 	 * Función que se desconecta de la base de datos
 	*/
-	public function desconectar()
+	public function __destruct()
 	{
 		@ mysql_free_result($this->result);			
 		@ mysql_close();
