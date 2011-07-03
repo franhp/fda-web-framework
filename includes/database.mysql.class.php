@@ -6,7 +6,7 @@
  *
  * @author Héctor Costa <hcostaguzman@franstelecom.com>
  * @author Fran Hermoso <franhp@franstelecom.com>
- * @version 1.0
+ * @version 1.1
  * @package Database
  * @subpackage MySQL
  */
@@ -37,7 +37,7 @@ class mysql
 	{
 		$settings = new Settings;
 		@ mysql_connect($settings->dbhostname,$settings->dbusername, $settings->dbpassword) or die ('Error conectando a mysql');
-		@ mysql_selectdb($settings->dbase) or die ('Error conectando a mysql');
+		@ mysql_selectdb($settings->dbase) or die ('Error seleccionando tabla');
 	}
 
 	
@@ -151,6 +151,13 @@ class mysql
 		return $rows;
 	}
 	
+	/**
+	 * Función que retorna la cadena segura para insertar en la base de datos
+	 * @param string $text
+	 */
+	public function clean($text){
+		return mysql_real_escape_string($text);
+	}
 
 
 	/**

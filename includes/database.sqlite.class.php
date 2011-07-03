@@ -5,7 +5,7 @@
  * Permite la creación de conexiones con la base de datos, tiene metodos para consultar y volcar resultados.
  *
  * @author Fran Hermoso <franhp@franstelecom.com>
- * @version 1.0
+ * @version 1.1
  * @package Database
  * @subpackage SQLite
  */
@@ -162,7 +162,7 @@ class sqlite
     }
     
     /**
-     * Funcion que transforma la manera de entender ID de Mysql a SQLite
+     * Función que transforma la manera de entender ID de Mysql a SQLite
      *
      * @return string 
      */
@@ -171,6 +171,15 @@ class sqlite
         $replacement = "rowid";
         $query = preg_replace($pattern, $replacement, $query);
         return $query;
+    }
+    
+    /**
+     * Función que retorna la cadena segura para poderla insertar en la bbdd
+     * @param string $string
+     * @return string
+     */
+    public function clean($string){
+    	return sqlite_escape_string($string);
     }
 }
 ?>

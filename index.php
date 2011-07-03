@@ -1,20 +1,18 @@
 <?php
-//Idioma por defecto
-require('lang/en_US.php');
 require('settings.php');
-$settings = new Settings();
-
-echo WELCOME.'<br>';
-
-
-$db = new $settings->database();
-$db->query("select * from paginas");
-echo '<br>Number of results = '.$db->num_rows();
-$db->debug('result');
+$settings = new Settings;
+$settings->bootstrap();
 
 
+$style = new Style();
+$style->header();
 
 
-echo '<br>'.FOOTER;
+$section = $settings->urlParameters(2);
+if($section == "users") include 'users.php';
+else if($section == "blog") include 'blog.php';
+else if($section == "login") include 'login.php';
+
+$style->footer();
 
 ?>
