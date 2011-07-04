@@ -19,9 +19,9 @@ class Login extends Users{
 	public function doLogin($username,$password){
 		$db = &$GLOBALS['db'];
 		$db->query('select id,username,password,role from users where 
-					username=\''.$username.'\' 
+					username=\''.$db->clean($username).'\' 
 					and 
-					password=\''.$password.'\''); //Must salt
+					password=\''.$db->clean($password).'\''); //Must salt
 		if($db->num_rows() > 0){
 			$result = $db->obj();
 			foreach($result as $user){
@@ -29,7 +29,7 @@ class Login extends Users{
 				$_SESSION['role']= $user->role;
 				$_SESSION['username'] = $user->username;
 			}
-			
+
 			//Cookie?
 			
 			return true;

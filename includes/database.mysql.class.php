@@ -35,7 +35,7 @@ class mysql
 	 */
 	public function __construct()
 	{
-		$settings = new Settings;
+		$settings = new Settings(false);
 		@ mysql_connect($settings->dbhostname,$settings->dbusername, $settings->dbpassword) or die ('Error conectando a mysql');
 		@ mysql_selectdb($settings->dbase) or die ('Error seleccionando tabla');
 	}

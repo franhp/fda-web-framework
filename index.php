@@ -1,8 +1,6 @@
 <?php
 require('settings.php');
-$settings = new Settings;
-$settings->bootstrap();
-
+$settings = new Settings(TRUE);
 
 $style = new Style();
 $style->head();

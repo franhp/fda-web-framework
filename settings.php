@@ -8,12 +8,16 @@
  */
 class Settings {
 	/**
+	 * Site URL
+	 */
+	var $siteurl = "http://localhost";
+	/**
 	 * Idioma por defecto
 	 */
 	var $default_lang = 'en';
     /**
      * Variable que permite especificar la base de datos a usar
-     * Posibles valores: mysql, sqlite, couchdb, mongodb
+     * Posibles valores: mysql, sqlite, couchdb, mongodb, odbc
      */
     var $database = "mysql";
     
@@ -25,33 +29,39 @@ class Settings {
     var $dbpassword = "";
     var $dbase = "framework";
     
+    
     /**
      * Parametros de una base de datos SQLite
      */
     //var $dbfile = "database/database.sqlite";
     
-    
     /**
-     * Clase  en la que se incluyen todas las clases necesarias
+     * Clase  en la que se incluyen todas las clases necesarias<br>
+     * Si se le pasa "false" en $start, se inicia sin ejecutar el constructor<br>
+     * @param $start
      */
-    public function bootstrap(){
-    	session_start();
-    	
-		/* Database connection*/
-    	require_once 'includes/database.'.$this->database.'.class.php';
-		$GLOBALS['db'] = new $this->database();
-		
-		/* Language, users and style */
-		require_once 'includes/users.class.php';
-		require_once 'includes/login.class.php';
-		require_once 'includes/style.class.php';
-		if($this->urlParameters(1)!=false) require_once 'lang/'.$this->urlParameters(1).'.php';
-		else require_once 'lang/'.$this->default_lang.'.php';
-		
-		
-		/* Other functions */
-		require_once 'includes/blog.class.php';
-    }
+    public function __construct($start = TRUE){
+    	if($start){
+	    	if (session_id() == "") session_start();
+			
+			/* Database connection*/
+	    	require_once 'includes/database.'.$this->database.'.class.php';
+			$GLOBALS['db'] = new $this->database();
+	
+			/* Language, users and style */
+			require_once 'includes/users.class.php';
+			require_once 'includes/login.class.php';
+			require_once 'includes/style.class.php';
+			
+			if($this->urlParameters(1)!="controllers") $_SESSION['lang'] = $this->urlParameters(1);
+			if($_SESSION['lang']!=false) require_once 'lang/'.$_SESSION['lang'].'.php';
+			else require_once 'lang/'.$this->default_lang.'.php';
+			
+			
+			/* Other functions */
+			require_once 'includes/blog.class.php';
+		}
+	}
     
     /**
      * Retorna el segmento especificado de la URL

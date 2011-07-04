@@ -16,10 +16,13 @@ class Users {
 	
 	public function __construct(){
 		$db = &$GLOBALS['db'];
-		
+
 		if(isset($_SESSION['userid'])&&!empty($_SESSION['userid'])){
-			$db->query('select id,username,role where id='.$_SESSION['userid']);
+			$db->query('select id,username,role
+						 from users 
+						 where id='.$_SESSION['userid']);
 			$result = $db->obj();
+
 			foreach($result as $user){
 				$this->username = $user->username;
 				$this->role = $user->role;

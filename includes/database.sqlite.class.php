@@ -38,7 +38,7 @@ class sqlite
     */
     public function __construct()
     {
-        $settings = new Settings;
+        $settings = new Settings(false);
         $this->db = sqlite_open($settings->dbfile, 0666, $error);
         if (!$this->db){
         $error = (file_exists($settings->dbfile)) ? "Impossible to open, check permissions" : "Impossible to create, check permissions";
