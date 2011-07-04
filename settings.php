@@ -35,6 +35,8 @@ class Settings {
      * Clase  en la que se incluyen todas las clases necesarias
      */
     public function bootstrap(){
+    	session_start();
+    	
 		/* Database connection*/
     	require_once 'includes/database.'.$this->database.'.class.php';
 		$GLOBALS['db'] = new $this->database();

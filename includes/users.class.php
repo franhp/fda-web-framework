@@ -11,10 +11,23 @@
 class Users {
 	
 	var $username;
-	var $password;
 	var $role;
+	var $id;
 	
-	
+	public function __construct(){
+		$db = &$GLOBALS['db'];
+		
+		if(isset($_SESSION['userid'])&&!empty($_SESSION['userid'])){
+			$db->query('select id,username,role where id='.$_SESSION['userid']);
+			$result = $db->obj();
+			foreach($result as $user){
+				$this->username = $user->username;
+				$this->role = $user->role;
+				$this->id = $user->id;
+			}
+		}
+	}
+
 	/**
 	 * Comprueba si el usuario existe y si no lo crea
 	 * 
@@ -59,6 +72,19 @@ class Users {
 		$result = $db->obj();
 		foreach ($result as $user) $userid = $user->id;
 		return $userid;
+	}
+	
+	/**
+	 * Retorna los permisos del usuario
+	 * @param $username
+	 * @return role
+	 */
+	public function getUserRole($username){
+		$db = &$GLOBALS['db'];
+		$db->query('select role from users where username=\''.$username.'\'');
+		$result = $db->obj();
+		foreach ($result as $user) $userRole = $user->role;
+		return $userRole;
 	}
 }
 ?>
