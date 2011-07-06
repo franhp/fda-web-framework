@@ -13,11 +13,11 @@ class Style{
 	}
 	
 	public function header(){
-		echo WELCOME.'<br>';
+		echo WELCOME_TEST.'<br>';
 	}
 	
 	public function footer(){
-		echo '<br>'.FOOTER.'</body></html>';	
+		echo '<br>'.FOOTER_TEST.'</body></html>';	
 	}
 	
 	public function error404(){

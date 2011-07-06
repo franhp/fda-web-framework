@@ -1,56 +1,62 @@
 <?php
-$user = new Users();
-if(empty($user->id)) {
+
+$user = new Login();
+if(!$user->isLogged()) {
 
 	echo '
-	<form method="post" id="form_id">
+	<div class="loginBox">
+	<form method="post" id="login">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
-	<input type="submit">
+	Remember: <input type="checkbox" name="remember" id="remember"><br>
+	<input type="submit" value="'.LOGIN.'">
 	</form>
-		User not logged in
+	<form id="logout" style="display: none;">
+		<input type="submit" value="'.LOGOUT.'">
+	</form>
+	</div>
 	';
 	
-	
-	
-	echo "
-	<script language=\"javascript\">
-		$('#form_id').submit(function() {
-				$.ajax({
-					type: 'POST',
-					url: 'http://localhost/controllers/login_controller.php' ,
-					data: $(this).serialize(),
-					success: function(data) {
-						if(data!=''){
-							alert(data);
-						}
-						else{
-							alert(data);
-						}
-					}
-				})
-			return false;
-		});
-
-	</script>";
+	logout_script();
+	login_script();
 }
 else {
-	echo 'User logged in';
-	echo '<form id="logout"><input type="submit" value="'.LOGOUT.'"></form>';
+	echo '
+	<div class="loginBox">
+	<form method="post" id="login" style="display: none;">
+	Username: <input type="text" name="username" id="username"><br>
+	Password: <input type="password" name="password" id="password"><br>
+	Remember: <input type="checkbox" name="remember" id="remember"><br>
+	<input type="submit" value="'.LOGIN.'">
+	</form>
+	<form id="logout">
+		'.WELCOME.$user->username.'
+		<input type="submit" value="'.LOGOUT.'">
+	</form>
+	</div>';
 	
-		echo "
+	login_script();
+	logout_script();
+
+}
+
+
+function logout_script(){
+	$settings = new Settings();
+	echo "
 	<script language=\"javascript\">
 		$('#logout').submit(function() {
 				$.ajax({
 					type: 'POST',
-					url: 'http://localhost/controllers/login_controller.php' ,
+					url: '".$settings->siteurl."/controllers/login_controller.php' ,
 					data:  { logout: 'true' },
 					success: function(data) {
-						if(data!=''){
-							alert(data);
+						if(data=='OK'){
+							$('#logout').html('".LOGGEDOUT."');
+							$('#login').show();
 						}
 						else{
-							alert(data);
+							$('#logout').append('".ERROR."');
 						}
 					}
 				})
@@ -60,4 +66,28 @@ else {
 	</script>";
 }
 
+function login_script(){
+	$settings = new Settings();
+	echo "
+	<script language=\"javascript\">
+		$('#login').submit(function() {
+				$.ajax({
+					type: 'POST',
+					url: '".$settings->siteurl."/controllers/login_controller.php' ,
+					data: $(this).serialize(),
+					success: function(data) {
+						if(data!='ERROR'){
+							$('#login').html('".WELCOME."'+data);
+							$('#logout').show();
+						}
+						else{
+							$('#login').append('".INVALID_LOGIN."');
+						}
+					}
+				})
+			return false;
+		});
+
+	</script>";
+}
 ?>

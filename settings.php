@@ -36,31 +36,26 @@ class Settings {
     //var $dbfile = "database/database.sqlite";
     
     /**
-     * Clase  en la que se incluyen todas las clases necesarias<br>
-     * Si se le pasa "false" en $start, se inicia sin ejecutar el constructor<br>
-     * @param $start
+     * Clase  en la que se incluyen todas las clases necesarias
      */
-    public function __construct($start = TRUE){
-    	if($start){
-	    	if (session_id() == "") session_start();
-			
+    public function bootstrap(){
+    		if (session_id() == "") session_start();
+    					
 			/* Database connection*/
 	    	require_once 'includes/database.'.$this->database.'.class.php';
-			$GLOBALS['db'] = new $this->database();
-	
+	    	$GLOBALS['db'] = new $this->database();
+			
 			/* Language, users and style */
 			require_once 'includes/users.class.php';
 			require_once 'includes/login.class.php';
 			require_once 'includes/style.class.php';
 			
 			if($this->urlParameters(1)!="controllers") $_SESSION['lang'] = $this->urlParameters(1);
-			if($_SESSION['lang']!=false) require_once 'lang/'.$_SESSION['lang'].'.php';
+			if(isset($_SESSION['lang'])) require_once 'lang/'.$_SESSION['lang'].'.php';
 			else require_once 'lang/'.$this->default_lang.'.php';
-			
-			
+
 			/* Other functions */
 			require_once 'includes/blog.class.php';
-		}
 	}
     
     /**

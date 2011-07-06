@@ -82,12 +82,8 @@ class Users {
 	 * @param $username
 	 * @return role
 	 */
-	public function getUserRole($username){
-		$db = &$GLOBALS['db'];
-		$db->query('select role from users where username=\''.$username.'\'');
-		$result = $db->obj();
-		foreach ($result as $user) $userRole = $user->role;
-		return $userRole;
+	public function getUserRole(){
+		return $this->role;
 	}
 }
 ?>

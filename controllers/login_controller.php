@@ -1,18 +1,24 @@
 <?php 
 include_once '../settings.php';
-$settings = new Settings(true);
+$settings = new Settings();
+$settings->bootstrap();
 
+/* Login case */
 if(!empty($_POST['username'])){
 	$user = new Login();
-	if($user->doLogin($_POST['username'],$_POST['password'])) echo 'LOL';
-	else echo 'WTF';
+	if(isset($_POST['remember'])) {
+		if($user->doLogin($_POST['username'],$_POST['password'],TRUE)) echo 'aaaaa'.$_SESSION['username'];
+	}
+	else if($user->doLogin($_POST['username'],$_POST['password'])) echo $_SESSION['username'];
+	else echo 'ERROR';
 }
+
+/* Logout case */
 else if (!empty($_POST['logout'])) {
 	$user = new Login();
-	$user->doLogout();
-	echo 'LOGGED OUT';
+	if($user->doLogout()) echo 'OK';
+	else echo 'ERROR';
 }
-else echo 'Get outta here';
 
 
 

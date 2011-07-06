@@ -1,5 +1,5 @@
 <?php
-$user = new Users();
-if($user->role > 2) $user->listUsers();
+$user = new Login();
+if($user->isLogged()&&$user->getUserRole()>2) $user->listUsers();
 else echo 'No tienes permisos';
 ?>
