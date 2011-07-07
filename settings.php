@@ -12,6 +12,10 @@ class Settings {
 	 */
 	var $siteurl = "http://localhost";
 	/**
+	 * Nombre del sitio
+	 */
+	var $sitename = "FilaDeAtras";
+	/**
 	 * Idioma por defecto
 	 */
 	var $default_lang = 'en';
@@ -50,10 +54,21 @@ class Settings {
 			require_once 'includes/login.class.php';
 			require_once 'includes/style.class.php';
 			
-			if($this->urlParameters(1)!="controllers") $_SESSION['lang'] = $this->urlParameters(1);
+			if($this->urlParameters(1)!="controllers") { //Discard all requests to controllers
+				$lang_dir = scandir("lang/"); //Find all languages in lang dir
+				$langs = array_slice($lang_dir, 2);
+				foreach ($langs as $lang) {
+					$languages[] = str_replace(".php", "", $lang);
+				}
+				if(in_array($this->urlParameters(1), $languages)) // If it exists, set it
+					$_SESSION['lang'] = $this->urlParameters(1);
+				else {
+					$_SESSION['lang'] = $this->default_lang; // Else redirect to the default
+					header("Location: ".$this->siteurl."/".$this->default_lang);
+				}
+			}
 			if(isset($_SESSION['lang'])) require_once 'lang/'.$_SESSION['lang'].'.php';
-			else require_once 'lang/'.$this->default_lang.'.php';
-
+			
 			/* Other functions */
 			require_once 'includes/blog.class.php';
 	}

@@ -28,14 +28,15 @@ class Users {
 						 from users 
 						 where username=\''.$db->clean($_COOKIE['username']).'\'
 						 and
-						 password=\''.$_COOKIE['password'].'\'');
+						 password=\''.$db->clean($_COOKIE['password']).'\'');
 			$result = $db->obj();
 		}
-	
-		foreach($result as $user){
-			$this->username = $user->username;
-			$this->role = $user->role;
-			$this->id = $user->id;
+		if(!empty($result)){
+			foreach($result as $user){
+				$this->username = $user->username;
+				$this->role = $user->role;
+				$this->id = $user->id;
+			}
 		}
 	}
 
