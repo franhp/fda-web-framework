@@ -40,9 +40,9 @@ class Login extends Users{
 				$_SESSION['username'] = $user->username;
 			}
 			if ($remember){
-				setcookie('remember',true,time()*60*60*15,'/',str_replace("http://", "", $settings->siteurl));
-				setcookie('username',$user->username,time()*60*60*15,'/',str_replace("http://", "", $settings->siteurl));
-				setcookie('password',$user->password,time()*60*60*15,'/',str_replace("http://", "", $settings->siteurl));
+				setcookie('remember',true,time()+3600*24*15,'/',str_replace("http://", "", $settings->siteurl));
+				setcookie('username',$user->username,time()+3600*24*15,'/',str_replace("http://", "", $settings->siteurl));
+				setcookie('password',$user->password,time()+3600*24*15,'/',str_replace("http://", "", $settings->siteurl));
 			}
 			return true;
 		}
@@ -80,8 +80,8 @@ class Login extends Users{
 		session_destroy();
 		
 		setcookie('remember',false,time()-3600,'/',str_replace("http://", "", $settings->siteurl));
-		setcookie('username',"",time()*-3600,'/',str_replace("http://", "", $settings->siteurl));
-		setcookie('password',"",time()*-3600,'/',str_replace("http://", "", $settings->siteurl));
+		setcookie('username',"",time()-3600,'/',str_replace("http://", "", $settings->siteurl));
+		setcookie('password',"",time()-3600,'/',str_replace("http://", "", $settings->siteurl));
 		
 		return true;
 	}

@@ -22,12 +22,20 @@ class Users {
 						 from users 
 						 where id='.$_SESSION['userid']);
 			$result = $db->obj();
-
-			foreach($result as $user){
-				$this->username = $user->username;
-				$this->role = $user->role;
-				$this->id = $user->id;
-			}
+		}
+		else if (isset($_COOKIE['remember'])){
+			$db->query('select id,username,role
+						 from users 
+						 where username=\''.$db->clean($_COOKIE['username']).'\'
+						 and
+						 password=\''.$_COOKIE['password'].'\'');
+			$result = $db->obj();
+		}
+	
+		foreach($result as $user){
+			$this->username = $user->username;
+			$this->role = $user->role;
+			$this->id = $user->id;
 		}
 	}
 

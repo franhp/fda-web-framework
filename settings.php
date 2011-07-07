@@ -40,7 +40,7 @@ class Settings {
      */
     public function bootstrap(){
     		if (session_id() == "") session_start();
-    					
+    		
 			/* Database connection*/
 	    	require_once 'includes/database.'.$this->database.'.class.php';
 	    	$GLOBALS['db'] = new $this->database();
