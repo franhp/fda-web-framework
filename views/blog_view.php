@@ -32,8 +32,10 @@ if($posts){
 			echo '<p>'.$post->post->body.'</p>';
 		
 			echo '<div class="comments">';
+			$commentCount = count((array)$post->post->comments);
 			
-			if(!empty($post->post->comments)){
+			if($commentCount>0){
+				print_r($post->post->comments);
 				foreach($post->post->comments as $comment){
 					echo '<hr><div class="comment">';
 					echo COMMENTEDBY.' '.$comment->username.' '.ON.' '.$comment->date;
@@ -41,14 +43,14 @@ if($posts){
 					echo '</div>';
 				}
 			}
-			else '<hr>No comments</div>';
+			else echo '<hr><div class="comment">No comments</div>';
 			
 			echo '</div></div>';
 		}
 }
 else echo $style->error404();
 
-if($options == "from") nextPreviousButtons();
+if($options == "from" || $options == "") nextPreviousButtons();
 
 /**
  * This function displays the suitable Next and Previous buttons
