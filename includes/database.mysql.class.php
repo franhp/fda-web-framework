@@ -96,7 +96,7 @@ class mysql
 		while ($fila = @mysql_fetch_object($this->result)) {
 			$array[] = $fila;
 		} 
-		return $array;
+		return (object)$array;
 	}
 	
 	/**
