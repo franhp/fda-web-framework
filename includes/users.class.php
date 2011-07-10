@@ -45,12 +45,27 @@ class Users {
 	 * 
 	 * @param  $nickname
 	 * @param  $password
+	 * @param  $name
+	 * @param  $lastname
+	 * @param  $birthdate
+	 * @param  $email
 	 * @param  $role
+	 * 
 	 * @return
 	 */
-	public function createUser($nickname,$password,$role){
-	
-		
+	public function createUser($nickname,$password,$name, $lastname, $birthdate, $email, $role){
+		$db = &$GLOBALS['db'];
+		$db->query("insert into users (username,password,name,lastname, IP, birthdate, email, role) values (
+									  '".$db->clean(strtolower($nickname))."', 
+									  '".$db->clean($db->clean(md5($password.'V1V4fDA')))."',
+									  '".$db->clean($name)."', 	
+									  '".$db->clean($lastname)."',
+									  '".$_SERVER['REMOTE_ADDR']."', 
+									  '".$db->clean($birthdate)."', 	
+									  '".$db->clean(strtolower($email))."',
+									  ".$db->clean($role)." )");
+		if($this->getUserId($nickname)) return true;
+		else return false;
 	}
 	
 	public function modifyUser($param,$value){
@@ -83,7 +98,8 @@ class Users {
 		$db->query('select id from users where username=\''.$username.'\'');
 		$result = $db->obj();
 		foreach ($result as $user) $userid = $user->id;
-		return $userid;
+		if(empty($userid)) return false;
+		else return $userid;
 	}
 	
 	/**

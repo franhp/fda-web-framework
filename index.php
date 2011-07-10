@@ -14,6 +14,7 @@ else if($section == 'login') {
 	else if($settings->urlParameters(3) == 'openid') include 'vies/login_openid_view.php';
 	else include 'views/login_view.php';
 }
+else if($section == 'register') include 'views/register_view.php';
 
 $style->footer();
 

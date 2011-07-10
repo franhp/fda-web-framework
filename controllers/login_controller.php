@@ -21,6 +21,4 @@ else if (!empty($_POST['logout'])) {
 	else echo 'ERROR';
 }
 
-
-
 ?>

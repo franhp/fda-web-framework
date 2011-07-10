@@ -1,3 +1,11 @@
+body{
+	
+	font-family: 'Lucida Grande',Tahoma,Arial,Verdana,Sans-Serif;
+	font-size: 12px;
+}
+
+/* Login  */
+
 .loginBox {
 	background-color: grey;
 	width: 20%;
@@ -20,4 +28,38 @@
 	
 .comment {
 	background-color: darkgrey;
+}
+
+/* Register */
+
+#register-div{
+	margin: 10px;
+	padding: 20px;
+	/*border: 2px solid black;*/
+	width: 500px;
+	line-height: 1.3em;
+}
+	
+#register-div label{
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+	
+#register-div input{
+	width: 250px;
+}
+	
+span {display:none; color: blue;}
+
+.correcto{
+	color: green;
+}
+
+.incorrecto{
+	color: red;
+}
+
+.cargando{
+	color: gray;
 }
