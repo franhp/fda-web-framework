@@ -21,6 +21,7 @@ else {
 }
 
 /* Show all posts in the object */
+echo '<div id="posts">';
 if($posts){
 	foreach($posts as $post){
 			echo '<div class="post">';
@@ -35,7 +36,6 @@ if($posts){
 			$commentCount = count((array)$post->post->comments);
 			
 			if($commentCount>0){
-				print_r($post->post->comments);
 				foreach($post->post->comments as $comment){
 					echo '<hr><div class="comment">';
 					echo COMMENTEDBY.' '.$comment->username.' '.ON.' '.$comment->date;
@@ -45,12 +45,47 @@ if($posts){
 			}
 			else echo '<hr><div class="comment">No comments</div>';
 			
-			echo '</div></div>';
+			echo '<div id="addComment'.$post->post->id.'" style="display: none;">
+					<textarea id="text'.$post->post->id.'"></textarea>
+					<input type="button" value="Add comment" onClick="postComment('.$post->post->id.')">
+					</div></div></div>';
+			echo '<input type="button" value="new comment" onclick="$(\'#addComment\'+'.$post->post->id.').show()">';
+
 		}
+		script();
 }
 else echo $style->error404();
 
 if($options == "from" || $options == "") nextPreviousButtons();
+echo '</div>';
+
+
+/**
+ * This function displays the required jquery
+ */
+function script(){
+	$settings = new Settings();
+	echo "
+	<script language=\"javascript\">
+	function postComment(id){
+		$.ajax({
+			type: 'POST',
+			url: '".$settings->siteurl."/controllers/blog_controller.php' ,
+			data: { id: id, text: $('#text'+id).val() },
+			success: function(data) {
+				if(data!=''){
+					$('#addComment'+id).prepend('<hr>'+data);	
+					
+				}
+				else{
+					$('#addComment'+id).prepend('".ERROR."');
+				}
+			}
+		})
+	
+	}
+	</script>";
+}
 
 /**
  * This function displays the suitable Next and Previous buttons

@@ -7,7 +7,7 @@ $style = new Style();
 $style->head();
 $style->header();
 $section = $settings->urlParameters(2);
-if($section == 'register') include 'views/users_view.php';
+if($section == 'users') include 'views/user_view.php';
 else if($section == 'blog') include 'views/blog_view.php';
 else if($section == 'login') {
 	if($settings->urlParameters(3) == 'oauth') include 'vies/login_oauth_view.php';

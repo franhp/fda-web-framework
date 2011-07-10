@@ -137,7 +137,7 @@ class Blog{
 
 	}
 	
-	public function addComment($idPost){
+	public function addComment($idPost,$text){
 		
 	}
 	
