@@ -153,5 +153,9 @@ class Blog{
 		
 	}
 	
+	public function searchPost($string){
+		
+	}
+	
 }
 ?>
