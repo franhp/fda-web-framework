@@ -15,7 +15,13 @@ if(!empty($_POST['exist_user'])){
 
 if(!empty($_POST['name'])){
 	if(!$user->getUserId($_POST['nick'])){
-		if($user->createUser($_POST['nick'], $_POST['password'], $_POST['name'], $_POST['lastname'], $_POST['anio']."-".$_POST['mes']."-".$_POST['dia'], $_POST['email'], 1)){
+		if($user->createUser($_POST['nick'], 
+								$_POST['password'], 
+								$_POST['name'], 
+								$_POST['lastname'], 
+								$_POST['anio']."-".$_POST['mes']."-".$_POST['dia'],
+								$_POST['email'],
+								1)){
 			echo "OK";
 		}
 		else echo "ERROR";

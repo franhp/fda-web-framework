@@ -181,5 +181,12 @@ class sqlite
     public function clean($string){
     	return sqlite_escape_string($string);
     }
+    
+    /**
+     * Returns the result
+     */
+    public function getResult(){
+    	return $this->result;
+    }
 }
 ?>

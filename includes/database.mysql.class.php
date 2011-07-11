@@ -158,7 +158,13 @@ class mysql
 	public function clean($text){
 		return mysql_real_escape_string($text);
 	}
-
+	
+	/**
+	 * Returns the result
+	 */
+	public function getResult(){
+		return $this->result;
+	}
 
 	/**
 	 * Función que se desconecta de la base de datos

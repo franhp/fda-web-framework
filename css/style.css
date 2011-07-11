@@ -50,16 +50,16 @@ body{
 	width: 250px;
 }
 	
-span {display:none; color: blue;}
+#register-div span {display:none; color: blue;}
 
-.correcto{
+#register-div .correcto{
 	color: green;
 }
 
-.incorrecto{
+#register-div .incorrecto{
 	color: red;
 }
 
-.cargando{
+#register-div .cargando{
 	color: gray;
 }

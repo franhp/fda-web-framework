@@ -132,13 +132,19 @@ class Blog{
 					where
 					u.id=c.userid
 					and
-					postid='.$idPost);
+					postid='.$idPost.'
+					order by c.date');
 		return $db->obj();
 
 	}
 	
-	public function addComment($idPost,$text){
-		
+	public function addComment($idPost, $text, $idUser){
+		$db = &$GLOBALS['db'];
+		$db->query('insert into comments (userid,postid,comment) 
+					values 
+					('.$db->clean($idUser).','.$db->clean($idPost).',\''.$db->clean($text).'\')');
+		if($db->getResult()) return true;
+		else return false;
 	}
 	
 	public function addPost($title,$content,$categories,$tags,$author, $date = FALSE){

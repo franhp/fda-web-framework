@@ -24,7 +24,7 @@ else {
 echo '<div id="posts">';
 if($posts){
 	foreach($posts as $post){
-			echo '<div class="post">';
+			echo '<div class="post" id="postID'.$post->post->id.'">';
 			
 			echo '<h1><a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/
 					'.$post->post->seourl.'">
@@ -33,23 +33,36 @@ if($posts){
 			echo '<p>'.$post->post->body.'</p>';
 		
 			echo '<div class="comments">';
-			$commentCount = count((array)$post->post->comments);
 			
+			/* Add Comments */
+			echo '
+			<div id="addComment'.$post->post->id.'" style="display: none;">
+				<textarea class="textarea'.$post->post->id.'"></textarea>
+			</div>
+			<div id="addComment'.$post->post->id.'Buttons" style="display: none;">
+			 	<input id="add'.$post->post->id.'" type="button" value="'.ADDCOMMENT.'" onClick="postComment('.$post->post->id.')">
+			 	<input id="cancel'.$post->post->id.'" type="button" value="'.CANCEL.'" onClick="removeEditor('.$post->post->id.')">
+			</div>';
+			echo '<input type="button" value="'.NEWCOMMENT.'" id="newButton'.$post->post->id.'"
+						onclick="createEditor('.$post->post->id.')">';
+			
+			
+			
+			/* The rest of the comments */
+			
+			$commentCount = count((array)$post->post->comments);
 			if($commentCount>0){
 				foreach($post->post->comments as $comment){
-					echo '<hr><div class="comment">';
+					echo '<div class="comment"><hr>';
 					echo COMMENTEDBY.' '.$comment->username.' '.ON.' '.$comment->date;
 					echo '<p>'.$comment->comment.'</p>';
 					echo '</div>';
 				}
 			}
-			else echo '<hr><div class="comment">No comments</div>';
+			else echo '<div class="comment" id="NoComment'.$post->post->id.'"><hr>'.NOCOMMENTS.'</div>';
+			echo '</div></div>';
 			
-			echo '<div id="addComment'.$post->post->id.'" style="display: none;">
-					<textarea id="text'.$post->post->id.'"></textarea>
-					<input type="button" value="Add comment" onClick="postComment('.$post->post->id.')">
-					</div></div></div>';
-			echo '<input type="button" value="new comment" onclick="$(\'#addComment\'+'.$post->post->id.').show()">';
+
 
 		}
 		script();
@@ -61,29 +74,50 @@ echo '</div>';
 
 
 /**
- * This function displays the required jquery
+ * This function displays the required javascript functions
  */
 function script(){
 	$settings = new Settings();
 	echo "
 	<script language=\"javascript\">
+	//<![CDATA[
+	function createEditor(id){
+		var config = 
+		    {
+		        toolbar : 'Basic'
+    		}
+		$('.textarea'+id).ckeditor(config);
+		$('#newButton'+id).hide();
+		$('#addComment'+id).fadeIn();
+		$('#addComment'+id+'Buttons').fadeIn();
+	}
+	
+	function removeEditor(id){
+		$('#newButton'+id).show();
+		$('#addComment'+id).fadeOut();
+		$('#addComment'+id+'Buttons').fadeOut();
+	}
+	
 	function postComment(id){
+		var html = $('.textarea'+id).val()
 		$.ajax({
 			type: 'POST',
 			url: '".$settings->siteurl."/controllers/blog_controller.php' ,
-			data: { id: id, text: $('#text'+id).val() },
+			data: { id: id, text:  html },
 			success: function(data) {
 				if(data!=''){
-					$('#addComment'+id).prepend('<hr>'+data);	
-					
+					$('#NoComment'+id).fadeOut();
+					$('#postID'+id).children('.comments').append('<div class=\"comment\"><hr>'+data+'</div>');	
+					removeEditor(id);
 				}
 				else{
-					$('#addComment'+id).prepend('".ERROR."');
+					$('.comments').append('".ERROR."');
 				}
 			}
 		})
 	
 	}
+	//]]>
 	</script>";
 }
 
@@ -100,16 +134,16 @@ function nextPreviousButtons(){
 	
 	if($totalPosts>5){	
 		if(empty($param1)||($param1 > 0 && $param1 < 4)){
-				echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/5/to/10">Next</a>';
+				echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/5/to/10">'.NEXT.'</a>';
 		}
 		else if(!empty($param2)&&$param1>1){
 			/* PREV */ 
-			echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/'.($param1-5).'/to/'.$param1.'">Previous</a>';
+			echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/'.($param1-5).'/to/'.$param1.'">'.PREVIOUS.'</a>';
 			
 			/* NEXT */
 			if ($param2<$totalPosts){
 				echo '&nbsp;';
-				echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/'.$param2.'/to/'.($param2+5).'">Next</a>';
+				echo '<a href="'.$settings->siteurl.'/'.$lang.'/blog/from/'.$param2.'/to/'.($param2+5).'">'.NEXT.'</a>';
 			}
 			
 		}

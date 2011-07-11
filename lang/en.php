@@ -14,7 +14,13 @@ define("LOGGEDOUT","Logged Out");
 define("WRITTENBY","Written by");
 define("COMMENTEDBY","Commented by");
 define("ON","on");
+define("NEXT","Next");
+define("PREVIOUS","Previous");
+define("NEWCOMMENT","New Comment");
+define("ADDCOMMENT","Add Comment");
+define("NOCOMMENTS","No comments");
 
-
+/* Common */
 define("ERROR","An error has occurred");
+define("CANCEL","Cancel");
 ?>

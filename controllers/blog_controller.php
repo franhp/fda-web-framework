@@ -3,11 +3,19 @@ include_once '../settings.php';
 $settings = new Settings();
 $settings->bootstrap();
 $user = new Login();
+$blog = new Blog();
 
 if($user->isLogged()){
-	echo $user->username.' '.ON.' '.time().'<p>'.$_POST['text'].'</p>';
+	if($blog->addComment($_POST['id'], $_POST['text'], $user->id)) {
+		echo COMMENTEDBY.' '.$user->username.' <i>just now</i><p>'.$_POST['text'].'</p>';	
+	}
+	else echo ERROR;
 }
 else{
-	echo $user->username.' '.ON.' '.time().'<p>'.$_POST['text'].'</p>';
+	if($blog->addComment($_POST['id'], $_POST['text'])){
+		echo COMMENTEDBY.' Anonymous <i>just now</i><p>'.$_POST['text'].'</p>';	
+	}
+	else echo ERROR;
+	
 }
 ?>
