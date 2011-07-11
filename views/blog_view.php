@@ -4,8 +4,11 @@ $settings = new Settings();
 
 $options = $settings->urlParameters(3);
 if(!empty($options)){
+	/* Tags & Categories */
+	if($options == "tags") $posts = $blog->getPostsByTag($settings->urlParameters(4));
+	else if($options == "categories") $posts = $blog->getPostsByCategory($settings->urlParameters(4));
 	/* If "all" is set, show all posts */
-	if($options == "all") $posts = $blog->getAllPosts();
+	else if($options == "all") $posts = $blog->getAllPosts();
 	/* If a range is set in the url, display that range of posts */
 	else if ($options == "from") {
 		$posts = $blog->getPosts($settings->urlParameters(4), $settings->urlParameters(6));
@@ -24,6 +27,7 @@ else {
 echo '<div id="posts">';
 if($posts){
 	foreach($posts as $post){
+			/* The post */
 			echo '<div class="post" id="postID'.$post->post->id.'">';
 			
 			echo '<h1><a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/
@@ -32,9 +36,35 @@ if($posts){
 			echo '<small>'.WRITTENBY.' '.$post->post->username.' '.ON.' '.$post->post->date.'</small>';
 			echo '<p>'.$post->post->body.'</p>';
 		
-			echo '<div class="comments">';
+			
+			/* Categories and tags */
+			$tagsCount = count((array)$post->post->tags);
+			if($tagsCount>0){
+				echo '<p>Tags: ';
+				foreach($post->post->tags as $tags){
+					echo '<a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/tags/'.$tags->tag_name.'">'.$tags->tag_name.'</a> ';
+				}
+				echo '</p>';
+			}
+			else echo '<p>No tags</p>';
+			$categoriesCount = count((array)$post->post->categories);
+			if($categoriesCount>0){
+				echo '<p>Categories: ';
+				foreach($post->post->categories as $categories){
+					echo '<a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/categories/'.$categories->category_name.'">'.$categories->category_name.'</a> ';
+				}
+				echo '<p>';
+			}
+			else echo '<p>No categories</p>';
+			
 			
 			/* Add Comments */
+			$commentCount = count((array)$post->post->comments);
+			echo '<a onclick="$(\'#comments'.$post->post->id.'\').fadeIn()">
+					'.$commentCount.' comments on this post (flechita)</a>';
+			
+			echo '<div id="comments'.$post->post->id.'" class="comments" style="display: none;">';
+			
 			echo '
 			<div id="addComment'.$post->post->id.'" style="display: none;">
 				<textarea class="textarea'.$post->post->id.'"></textarea>
@@ -49,8 +79,6 @@ if($posts){
 			
 			
 			/* The rest of the comments */
-			
-			$commentCount = count((array)$post->post->comments);
 			if($commentCount>0){
 				foreach($post->post->comments as $comment){
 					echo '<div class="comment"><hr>';

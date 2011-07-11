@@ -39,8 +39,43 @@ class Blog{
 			foreach($postIds as $postId){
 				$posts[] = $this->getPostById($postId->id);
 			}
-			return $posts;
+			if(empty($posts)) return false;
+			else return $posts;
 		}
+	}
+	
+	public function getPostsByTag($tag){
+		$db = &$GLOBALS['db'];
+		$db->query('select p.id from posts p, posts_tags, tags
+					where 
+					p.id=posts_tags.id_post
+					and
+					posts_tags.id_tag=tags.id
+					and
+					tags.tag_name=\''.$db->clean($tag).'\'');
+		$result = $db->obj();
+		foreach($result as $post){
+			$posts[] = $this->getPostById($post->id);
+		}
+		if(empty($posts)) return false;
+		else return $posts;
+	}
+	
+	public function getPostsByCategory($category){
+		$db = &$GLOBALS['db'];
+		$db->query('select p.id from posts p, posts_categories, categories
+					where 
+					p.id=posts_categories.id_post
+					and
+					posts_categories.id_tag=categories.id
+					and
+					categories.tag_name=\''.$db->clean($category).'\'');
+		$result = $db->obj();
+		foreach($result as $post){
+			$posts[] = $this->getPostById($post->id);
+		}
+		if(empty($posts)) return false;
+		else return $posts;
 	}
 	
 	/**
@@ -60,7 +95,9 @@ class Blog{
 		foreach($result as $item){
 			$post = new stdClass();
 			$post->post = $item;
-			$post->post->comments = $this->getComments($idPost);
+			$post->post->comments = $this->getPostComments($idPost);
+			$post->post->categories = $this->getPostCategories($idPost);
+			$post->post->tags = $this->getPostTags($idPost);
 		}
 		return $post;
 	}
@@ -82,9 +119,59 @@ class Blog{
 		foreach($result as $item){
 			$post = new stdClass();
 			$post->post = $item;
-			$post->post->comments = $this->getComments($item->id);
+			$post->post->comments = $this->getPostComments($item->id);
+			$post->post->categories = $this->getPostCategories($item->id);
+			$post->post->tags = $this->getPostTags($item->id);
 		}
 		return $post;
+	}
+	
+
+	
+	
+	/**
+	 * Retorna todos los comentarios de un post en un objeto
+	 * @param $idPost
+	 * @return stdClass
+	 */
+	public function getPostComments($idPost){
+		$db = &$GLOBALS['db'];
+		$db->query('select u.username,c.comment,c.date,c.id
+					from users u, comments c
+					where
+					u.id=c.userid
+					and
+					postid='.$idPost.'
+					order by c.date');
+		return $db->obj();
+
+	}
+	
+	public function getPostCategories($idPost){
+		$db = &$GLOBALS['db'];
+		$db->query('select c.category_name from categories c, posts_categories
+					where c.id=posts_categories.id_category
+					and
+					posts_categories.id_post='.$idPost);
+		return $db->obj();
+	}
+	
+	public function getPostTags($idPost){
+		$db = &$GLOBALS['db'];
+		$db->query('select t.tag_name from tags t, posts_tags
+					where t.id=posts_tags.id_tag
+					and
+					posts_tags.id_post='.$idPost);
+		return $db->obj();
+	}
+	
+
+	public function getCategories(){
+		
+	}
+	
+	public function getTags(){
+		
 	}
 	
 	/**
@@ -118,24 +205,6 @@ class Blog{
 					order by date desc 
 					limit '.$start.','.$end);
 		return $db->obj();
-	}
-	
-	/**
-	 * Retorna todos los comentarios de un post en un objeto
-	 * @param $idPost
-	 * @return stdClass
-	 */
-	public function getComments($idPost){
-		$db = &$GLOBALS['db'];
-		$db->query('select u.username,c.comment,c.date,c.id
-					from users u, comments c
-					where
-					u.id=c.userid
-					and
-					postid='.$idPost.'
-					order by c.date');
-		return $db->obj();
-
 	}
 	
 	public function addComment($idPost, $text, $idUser){
