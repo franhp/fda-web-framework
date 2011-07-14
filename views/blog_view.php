@@ -58,25 +58,18 @@ if($posts){
 			else echo '<p>No categories</p>';
 			
 			
-			/* Add Comments */
+			/* Comments */
 			$commentCount = count((array)$post->post->comments);
 			echo '<a onclick="$(\'#comments'.$post->post->id.'\').fadeIn()">
 					'.$commentCount.' comments on this post (flechita)</a>';
 			
 			echo '<div id="comments'.$post->post->id.'" class="comments" style="display: none;">';
 			
-			echo '
-			<div id="addComment'.$post->post->id.'" style="display: none;">
-				<textarea id="textarea'.$post->post->id.'"></textarea>
-			 	<input id="add'.$post->post->id.'" type="button" value="'.ADDCOMMENT.'" onClick="postComment('.$post->post->id.')">
-			 	<input id="cancel'.$post->post->id.'" type="button" value="'.CANCEL.'" onClick="removeEditor('.$post->post->id.')">
-			</div>';
+			/* New comment button */
 			echo '<input type="button" value="'.NEWCOMMENT.'" id="newButton'.$post->post->id.'"
 						onclick="createEditor('.$post->post->id.')">';
 			
-			
-			
-			/* The rest of the comments */
+			/* All the comments */
 			if($commentCount>0){
 				foreach($post->post->comments as $comment){
 					echo '<div class="comment"><hr>';
@@ -86,6 +79,20 @@ if($posts){
 				}
 			}
 			else echo '<div class="comment" id="NoComment'.$post->post->id.'"><hr>'.NOCOMMENTS.'</div>';
+			
+			/* Add Comment form */
+			echo '
+			<div id="addComment'.$post->post->id.'" style="display: none;">
+				<textarea id="textarea'.$post->post->id.'"></textarea>
+			 	<input id="add'.$post->post->id.'" type="button" value="'.ADDCOMMENT.'" onClick="postComment('.$post->post->id.')">
+			 	<input id="cancel'.$post->post->id.'" type="button" value="'.CANCEL.'" onClick="removeEditor('.$post->post->id.')">
+			</div>';
+			
+			/* Another New comment button */
+			echo '<input type="button" value="'.NEWCOMMENT.'" id="newButton'.$post->post->id.'two"
+						onclick="createEditor('.$post->post->id.')">';
+			
+			
 			echo '</div></div>';
 			
 
@@ -108,22 +115,21 @@ function script(){
 	<script language=\"javascript\">
 	//<![CDATA[
 	function createEditor(id){
-		var config = 
-		    {
-		        toolbar : 'Basic'
-    		}
-		$('#textarea'+id).ckeditor(config);
+		$('#textarea'+id).ckeditor({ toolbar: 'Basic'});
+		$('#addComment'+id).slideDown();
 		$('#newButton'+id).hide();
-		$('#addComment'+id).fadeIn();
+		$('#newButton'+id+'two').hide();
+		$.scrollTo('#cancel'+id);
 	}
 	
 	function removeEditor(id){
 		$('#newButton'+id).show();
-		$('#addComment'+id).fadeOut();
+		$('#newButton'+id+'two').show();
+		$('#addComment'+id).slideUp();
 	}
 	
 	function postComment(id){
-		var html = $('.textarea'+id).val()
+		var html = $('#textarea'+id).val()
 		$.ajax({
 			type: 'POST',
 			url: '".$settings->siteurl."/controllers/blog_controller.php' ,
