@@ -15,7 +15,7 @@ if(!empty($options)){
 		nextPreviousButtons();
 	}
 	/* If the SEO url of a post is specified, show the post */
-	else $posts[] = $blog->getPostBySeoUrl($options);
+	else if($options == "post") $posts[] = $blog->getPostBySeoUrl($settings->urlParameters(4));
 }
 /* By default show first 5 posts */
 else {
@@ -30,7 +30,7 @@ if($posts){
 			/* The post */
 			echo '<div class="post" id="postID'.$post->post->id.'">';
 			
-			echo '<h1><a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/
+			echo '<h1><a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/post/
 					'.$post->post->seourl.'">
 					'.$post->post->title.'</a></h1>';
 			echo '<small>'.WRITTENBY.' '.$post->post->username.' '.ON.' '.$post->post->date.'</small>';
@@ -67,9 +67,7 @@ if($posts){
 			
 			echo '
 			<div id="addComment'.$post->post->id.'" style="display: none;">
-				<textarea class="textarea'.$post->post->id.'"></textarea>
-			</div>
-			<div id="addComment'.$post->post->id.'Buttons" style="display: none;">
+				<textarea id="textarea'.$post->post->id.'"></textarea>
 			 	<input id="add'.$post->post->id.'" type="button" value="'.ADDCOMMENT.'" onClick="postComment('.$post->post->id.')">
 			 	<input id="cancel'.$post->post->id.'" type="button" value="'.CANCEL.'" onClick="removeEditor('.$post->post->id.')">
 			</div>';
@@ -114,16 +112,14 @@ function script(){
 		    {
 		        toolbar : 'Basic'
     		}
-		$('.textarea'+id).ckeditor(config);
+		$('#textarea'+id).ckeditor(config);
 		$('#newButton'+id).hide();
 		$('#addComment'+id).fadeIn();
-		$('#addComment'+id+'Buttons').fadeIn();
 	}
 	
 	function removeEditor(id){
 		$('#newButton'+id).show();
 		$('#addComment'+id).fadeOut();
-		$('#addComment'+id+'Buttons').fadeOut();
 	}
 	
 	function postComment(id){
