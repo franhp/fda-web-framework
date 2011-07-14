@@ -1,1 +1,1 @@
-this file is just a test
+This file must contain info for humans, just a joke to the robots.txt
