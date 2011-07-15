@@ -130,10 +130,6 @@ function script(){
 		$('#addComment'+id).slideUp();
 	}
 	
-	function closeComment(id){
-		;
-	}
-	
 	function postComment(id){
 		var html = $('#textarea'+id).val()
 		$.ajax({
@@ -143,7 +139,8 @@ function script(){
 			success: function(data) {
 				if(data!=''){
 					$('#NoComment'+id).fadeOut();
-					$('#postID'+id).children('.comments').append('<div class=\"comment\"><hr>'+data+'</div>');	
+					$('<div class=\"comment\"><hr>'+data+'</div>').insertBefore($('#addComment'+id));
+					$('#textarea'+id).val('');
 					removeEditor(id);
 				}
 				else{
