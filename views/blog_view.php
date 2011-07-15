@@ -68,6 +68,8 @@ if($posts){
 			/* New comment button */
 			echo '<input type="button" value="'.NEWCOMMENT.'" id="newButton'.$post->post->id.'"
 						onclick="createEditor('.$post->post->id.')">';
+			echo '<input type="button" value="'.CANCEL.'"
+						onclick="$(\'#comments'.$post->post->id.'\').slideUp()">';
 			
 			/* All the comments */
 			if($commentCount>0){
@@ -119,13 +121,17 @@ function script(){
 		$('#addComment'+id).slideDown();
 		$('#newButton'+id).hide();
 		$('#newButton'+id+'two').hide();
-		$.scrollTo('#cancel'+id);
+		$.scrollTo('#addComment'+id, {offset : -75 });
 	}
 	
 	function removeEditor(id){
 		$('#newButton'+id).show();
 		$('#newButton'+id+'two').show();
 		$('#addComment'+id).slideUp();
+	}
+	
+	function closeComment(id){
+		;
 	}
 	
 	function postComment(id){

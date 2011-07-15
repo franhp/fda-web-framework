@@ -207,11 +207,18 @@ class Blog{
 		return $db->obj();
 	}
 	
-	public function addComment($idPost, $text, $idUser){
+	public function addComment($idPost, $text, $idUser = FALSE){
 		$db = &$GLOBALS['db'];
-		$db->query('insert into comments (userid,postid,comment) 
+		if($idUser) {
+			$db->query('insert into comments (userid,postid,comment) 		
 					values 
 					('.$db->clean($idUser).','.$db->clean($idPost).',\''.$db->clean($text).'\')');
+		}
+		else {
+			$db->query('insert into comments (userid,postid,comment) 		
+					values 
+					(17,'.$db->clean($idPost).',\''.$db->clean($text).'\')');
+		}
 		if($db->getResult()) return true;
 		else return false;
 	}
