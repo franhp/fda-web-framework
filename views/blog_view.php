@@ -60,8 +60,8 @@ if($posts){
 			
 			/* Comments */
 			$commentCount = count((array)$post->post->comments);
-			echo '<a onclick="$(\'#comments'.$post->post->id.'\').fadeIn()">
-					'.$commentCount.' comments on this post (flechita)</a>';
+			echo '<a onclick="$(\'#comments'.$post->post->id.'\').slideDown()">
+					'.$commentCount.' comments on this post</a>';
 			
 			echo '<div id="comments'.$post->post->id.'" class="comments" style="display: none;">';
 			
@@ -82,6 +82,9 @@ if($posts){
 			}
 			else echo '<div class="comment" id="NoComment'.$post->post->id.'"><hr>'.NOCOMMENTS.'</div>';
 			
+			/* Loading gif */
+			echo '<img id="loadingGif'.$post->post->id.'" src="'.$settings->siteurl.'/img/loading.gif" style="display: none;">';
+			
 			/* Add Comment form */
 			echo '
 			<div id="addComment'.$post->post->id.'" style="display: none;">
@@ -93,6 +96,7 @@ if($posts){
 			/* Another New comment button */
 			echo '<input type="button" value="'.NEWCOMMENT.'" id="newButton'.$post->post->id.'two"
 						onclick="createEditor('.$post->post->id.')">';
+			
 			
 			
 			echo '</div></div>';
@@ -131,6 +135,7 @@ function script(){
 	}
 	
 	function postComment(id){
+		$('#loadingGif'+id).show()
 		var html = $('#textarea'+id).val()
 		$.ajax({
 			type: 'POST',
@@ -142,9 +147,11 @@ function script(){
 					$('<div class=\"comment\"><hr>'+data+'</div>').insertBefore($('#addComment'+id));
 					$('#textarea'+id).val('');
 					removeEditor(id);
+					$('#loadingGif'+id).hide()
 				}
 				else{
 					$('.comments').append('".ERROR."');
+					$('#loadingGif'+id).hide()
 				}
 			}
 		})
