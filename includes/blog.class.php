@@ -198,6 +198,7 @@ class Blog{
 	 * Retorna las IDs de todos los posts ordenados por fecha y limitados por $start y $end
 	 * @param  $start
 	 * @param  $end
+	 * @return stdClass
 	 */
 	public function getPostIdsRange($start,$end){
 		$db = &$GLOBALS['db'];
@@ -210,11 +211,13 @@ class Blog{
 	public function addComment($idPost, $text, $idUser = FALSE){
 		$db = &$GLOBALS['db'];
 		if($idUser) {
+			/* User comment */
 			$db->query('insert into comments (userid,postid,comment) 		
 					values 
 					('.$db->clean($idUser).','.$db->clean($idPost).',\''.$db->clean($text).'\')');
 		}
 		else {
+			/* Anonymous comment */ 
 			$db->query('insert into comments (userid,postid,comment) 		
 					values 
 					(17,'.$db->clean($idPost).',\''.$db->clean($text).'\')');
@@ -223,7 +226,11 @@ class Blog{
 		else return false;
 	}
 	
-	public function addPost($title,$content,$categories,$tags,$author, $date = FALSE){
+	public function addPost($title,$body,$categories,$tags,$author, $date = FALSE){
+		
+	}
+	
+	public function modPost($idPost,$field,$modifiedField){
 		
 	}
 	
