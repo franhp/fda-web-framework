@@ -10,11 +10,11 @@ class Settings {
 	/**
 	 * Site URL
 	 */
-	var $siteurl = "http://localhost/xinxat.fw.com";
+	var $siteurl = "http://localhost/";
 	/**
 	 * Nombre del sitio
 	 */
-	var $sitename = "Xinxat";
+	var $sitename = "FransTelecom";
 	/**
 	 * Idioma por defecto
 	 */
