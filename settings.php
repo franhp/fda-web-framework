@@ -3,7 +3,7 @@
  * Clase que contiene todos los parametros para crear la web
  * 
  * @author Fran Hermoso <franhp@franstelecom.com>
- * @author Héctor Costa <hcostaguzman@franstelecom.com>
+ * @author Hï¿½ctor Costa <hcostaguzman@franstelecom.com>
  * @version 1.0
  */
 class Settings {
@@ -54,14 +54,14 @@ class Settings {
 			require_once 'includes/login.class.php';
 			require_once 'includes/style.class.php';
 			
-			if($this->urlParameters(1)!="controllers") { //Discard all requests to controllers
+			if($this->urlParameters(2)!="controllers") { //Discard all requests to controllers
 				$lang_dir = scandir("lang/"); //Find all languages in lang dir
 				$langs = array_slice($lang_dir, 2);
 				foreach ($langs as $lang) {
 					$languages[] = str_replace(".php", "", $lang);
 				}
-				if(in_array($this->urlParameters(1), $languages)) // If it exists, set it
-					$_SESSION['lang'] = $this->urlParameters(1);
+				if(in_array($this->urlParameters(2), $languages)) // If it exists, set it
+					$_SESSION['lang'] = $this->urlParameters(2);
 				else {
 					$_SESSION['lang'] = $this->default_lang; // Else redirect to the default
 					header("Location: ".$this->siteurl."/".$this->default_lang);
