@@ -10,7 +10,7 @@ class Settings {
 	/**
 	 * Site URL
 	 */
-	var $siteurl = "http://localhost/";
+	var $siteurl = "http://localhost/xinxat.fw.com";
 	/**
 	 * Nombre del sitio
 	 */
