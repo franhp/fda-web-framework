@@ -1,7 +1,7 @@
 <?php
 	$settings = new Settings();
 ?>
-
+<h2>Register</h2>
 <script src="<?=$settings->siteurl?>/js/register_form.js" type="text/javascript"></script>
 <script>
 
@@ -68,17 +68,17 @@ function doRegistration(){
 		
 		<label id="surname-label">Ingresa tu apellido<br><input type="text" id="lastname" name="lastname" tabindex="1" title="Ingresa tu apellido" class=""> <span></span></label>
 		
-		<label id="nick-label">Ingresa tu usuario<br><input type="text" id="nick" name="nick" tabindex="1" autocomplete="off" title="Ingrese un nombre de usuario único" class=""> <span></span></label>
+		<label id="nick-label">Ingresa tu usuario<br><input type="text" id="nick" name="nick" tabindex="1" autocomplete="off" title="Ingrese un nombre de usuario ï¿½nico" class=""> <span></span></label>
 		
-		<label id="passw-label">Contrase&ntilde;a deseada<br><input type="password" id="password" name="password" tabindex="2" autocomplete="off" title="Ingresa una contraseña segura" class=""> <span></span></label>
+		<label id="passw-label">Contrase&ntilde;a deseada<br><input type="password" id="password" name="password" tabindex="2" autocomplete="off" title="Ingresa una contraseï¿½a segura" class=""> <span></span></label>
 		
-		<label id="passwc-label">Confirme contrase&ntilde;a<br><input type="password" id="password2" name="password2" tabindex="3" autocomplete="off" title="Vuelve a ingresar la contraseña" class=""> <span></span></label>
+		<label id="passwc-label">Confirme contrase&ntilde;a<br><input type="password" id="password2" name="password2" tabindex="3" autocomplete="off" title="Vuelve a ingresar la contraseï¿½a" class=""> <span></span></label>
 		
-		<label id="email-label">Email<br><input type="text" id="email" name="email" tabindex="4" autocomplete="on" title="Ingresa tu dirección de email" class=""> <span></span></label>
+		<label id="email-label">Email<br><input type="text" id="email" name="email" tabindex="4" autocomplete="on" title="Ingresa tu direcciï¿½n de email" class=""> <span></span></label>
 		
 		<label id="date-label">Fecha de nacimiento<br>
 		
-			<select id="dia" name="dia" tabindex="5" autocomplete="off" title="Ingrese día de nacimiento" class=""  style="width: 51px">
+			<select id="dia" name="dia" tabindex="5" autocomplete="off" title="Ingrese dï¿½a de nacimiento" class=""  style="width: 51px">
 				<option value="">D&iacute;a</option>
 				<option value="1">1</option>
 				<option value="2">2</option>
@@ -129,7 +129,7 @@ function doRegistration(){
 				<option value="12">Diciembre</option>
 			</select>
 			
-			<select id="anio" name="anio" tabindex="7" autocomplete="off" title="Ingrese año de nacimiento" class=""  style="width: 70px">
+			<select id="anio" name="anio" tabindex="7" autocomplete="off" title="Ingrese aï¿½o de nacimiento" class=""  style="width: 70px">
 				<option value="">A&ntilde;o</option>
 				<option value="1993">1993</option>
 				<option value="1992">1992</option>

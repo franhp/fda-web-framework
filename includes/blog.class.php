@@ -3,7 +3,7 @@
  * Blog Class para FilaDeAtras Framework
  * 
  * Esta clase permite gestionar todo lo relacionado <br>
- * con los posts de un blog, mostrarlos, añadirlos, borrarlos, ...
+ * con los posts de un blog, mostrarlos, aï¿½adirlos, borrarlos, ...
  * @author Fran Hermoso
  * @version 1.0
  */
@@ -121,7 +121,7 @@ class Blog{
 			$post->post = $item;
 			$post->post->comments = $this->getPostComments($item->id);
 			$post->post->categories = $this->getPostCategories($item->id);
-			$post->post->tags = $this->getPostTags($item->id);
+			//$post->post->tags = $this->getPostTags($item->id);
 		}
 		return $post;
 	}

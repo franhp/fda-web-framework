@@ -1,10 +1,11 @@
+<h2>Login</h2>
 <?php
 
 $user = new Login();
 if(!$user->isLogged()) {
 
 	echo '
-	<div class="loginBox">
+	<div id="loginBox" class="loginBox">
 	<form method="post" id="login">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
@@ -14,7 +15,7 @@ if(!$user->isLogged()) {
 	<form id="logout" style="display: none;">
 		<input type="submit" value="'.LOGOUT.'">
 	</form>
-	</div>
+	</div><span id="result"></span>
 	';
 	
 	logout_script();
@@ -22,7 +23,7 @@ if(!$user->isLogged()) {
 }
 else {
 	echo '
-	<div class="loginBox">
+	<div id="loginBox"  class="loginBox">
 	<form method="post" id="login" style="display: none;">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
@@ -33,7 +34,7 @@ else {
 		'.WELCOME.$user->username.'
 		<input type="submit" value="'.LOGOUT.'">
 	</form>
-	</div>';
+	</div><span id="result"></span>';
 	
 	login_script();
 	logout_script();
@@ -54,9 +55,11 @@ function logout_script(){
 						if(data=='OK'){
 							$('#logout').html('".LOGGEDOUT."');
 							$('#login').show();
+                                                        $('#logout').html('');
 						}
 						else{
-							$('#logout').append('".ERROR."');
+                                                        $('#result').html('');
+							$('#result').append('".ERROR."');
 						}
 					}
 				})
@@ -77,11 +80,14 @@ function login_script(){
 					data: $(this).serialize(),
 					success: function(data) {
 						if(data!='ERROR'){
-							$('#login').html('".WELCOME."'+data);
+                                                        $('#loginBox').fadeOut(500);
+							$('#result').html('".WELCOME."'+data);
 							$('#logout').show();
 						}
 						else{
-							$('#login').append('".INVALID_LOGIN."');
+                                                $('#result').html('')
+                                                        $('#result').html('');
+							$('#result').append('".INVALID_LOGIN."');
 						}
 					}
 				})

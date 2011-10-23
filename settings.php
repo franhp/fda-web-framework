@@ -14,7 +14,7 @@ class Settings {
 	/**
 	 * Nombre del sitio
 	 */
-	var $sitename = "Xinxa web";
+	var $sitename = "Xinxat web";
 	/**
 	 * Idioma por defecto
 	 */
@@ -83,6 +83,7 @@ class Settings {
 		if($segment<count($parts)) return $parts[$segment];
 		else return FALSE;
     }
+    
 }
 
 ?>

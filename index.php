@@ -4,9 +4,12 @@ $settings = new Settings();
 $settings->bootstrap();
 
 $style = new Style();
+$section = $settings->urlParameters(3);
+if($section != 'client'){
+
 $style->head();
 $style->header();
-$section = $settings->urlParameters(2);
+
 if($section == 'users') include 'views/user_view.php';
 else if($section == 'blog') include 'views/blog_view.php';
 else if($section == 'login') {
@@ -19,7 +22,20 @@ else if($section == 'admin'){
 	if($settings->urlParameters(3) == 'blog') include 'views/admin_blog_view.php';
 }
 
+else if($section == 'api'){
+	include 'includes/api.class.php';
+}
+else{
+    include 'views/home_view.php';
+}
+
 $style->footer();
 
-
+}
+else {
+$style->headClient();
+$style->headerClient();
+    include 'views/client/home_view.php';
+$style->footerClient();
+}
 ?>
