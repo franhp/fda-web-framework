@@ -25,21 +25,13 @@ class Style {
 
         //array con el menu
         $menu = array(
-            array('section' => '',
-                'title' => 'Home',
-                'url' => '/web.xinxat.com/en/'),
-            array('section' => 'blog',
-                'title' => 'Blog',
-                'url' => '/web.xinxat.com/en/blog'),
-            array('section' => 'register',
-                'title' => 'Register',
-                'url' => '/web.xinxat.com/en/register'),
-            array('section' => 'login',
-                'title' => 'Login',
-                'url' => '/web.xinxat.com/en/login'),
-            array('section' => 'client',
-                'title' => 'Client',
-                'url' => '/web.xinxat.com/en/client')
+            array('section' => '', 'title' => 'Home', 'url' => '/web.xinxat.com/en/', 'show' => 'always'),
+            array('section' => 'blog', 'title' => 'Blog', 'url' => '/web.xinxat.com/en/blog', 'show' => 'always'),
+            array('section' => 'register', 'title' => 'Register', 'url' => '/web.xinxat.com/en/register', 'show' => 'nologged'),
+            array('section' => 'user', 'title' => 'User', 'url' => '/web.xinxat.com/en/user', 'show' => 'logged'),
+            array('section' => 'client', 'title' => 'Client', 'url' => '/web.xinxat.com/en/client', 'show' => 'logged'),
+            array('section' => 'login', 'title' => 'Login', 'url' => '/web.xinxat.com/en/login', 'show' => 'nologged'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => '/web.xinxat.com/en/login', 'show' => 'logged')
         );
 
         echo '<div id="header">
@@ -52,10 +44,19 @@ class Style {
 
         foreach ($menu as $seccion) {
 
-            if ($seccion['section'] == $section)
-                echo '<li class="liMenu"><a href="' . $seccion['url'] . '" class="active">' . $seccion['title'] . '</a></li>';
-            else
-                echo '<li class="liMenu"><a href="' . $seccion['url'] . '" >' . $seccion['title'] . '</a></li>';
+            if (empty($_SESSION['userid'])) {
+                if ($seccion['show'] == 'always' || $seccion['show'] == 'nologged') {
+                    if ($seccion['section'] == $section)
+                        echo '<li class="liMenu"><a href="' . $seccion['url'] . '" class="active">' . $seccion['title'] . '</a></li>';
+                    else
+                        echo '<li class="liMenu"><a href="' . $seccion['url'] . '" >' . $seccion['title'] . '</a></li>';
+                }
+            } else if ($seccion['show'] == 'always' || $seccion['show'] == 'logged') {
+                if ($seccion['section'] == $section)
+                    echo '<li class="liMenu"><a href="' . $seccion['url'] . '" class="active">' . $seccion['title'] . '</a></li>';
+                else
+                    echo '<li class="liMenu"><a href="' . $seccion['url'] . '" >' . $seccion['title'] . '</a></li>';
+            }
         }
 
         echo '</ul>
@@ -74,7 +75,7 @@ class Style {
     public function headClient() {
         $settings = new Settings();
 
-echo '<html>
+        echo '<html>
         <head>
             <title>' . $settings->sitename . '</title>
             <link href="' . $settings->siteurl . '/css/style.css" media="screen" rel="stylesheet" type="text/css" />
@@ -104,18 +105,10 @@ echo '<html>
 
         //array con el menu
         $menu = array(
-            array('section' => '',
-                'title' => 'Home',
-                'url' => '/web.xinxat.com/en/'),
-            array('section' => 'register',
-                'title' => 'Register',
-                'url' => '/web.xinxat.com/en/register'),
-            array('section' => 'login',
-                'title' => 'Login',
-                'url' => '/web.xinxat.com/en/login'),
-            array('section' => 'client',
-                'title' => 'Client',
-                'url' => '/web.xinxat.com/en/client')
+            array('section' => '', 'title' => 'Home', 'url' => '/web.xinxat.com/en/'),
+            array('section' => 'user', 'title' => 'User', 'url' => '/web.xinxat.com/en/user'),
+            array('section' => 'client', 'title' => 'Client', 'url' => '/web.xinxat.com/en/client'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => '/web.xinxat.com/en/login')
         );
 
         echo '<div id="header">

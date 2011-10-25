@@ -25,10 +25,10 @@ class Users {
             $result = $db->obj();
         } else if (isset($_COOKIE['remember'])) {
             $db->query('select id,username,role
-						 from users 
-						 where username=\'' . $db->clean($_COOKIE['username']) . '\'
-						 and
-						 password=\'' . $db->clean($_COOKIE['password']) . '\'');
+                         from users 
+                         where username=\'' . $db->clean($_COOKIE['username']) . '\'
+                         and
+                         password=\'' . $db->clean($_COOKIE['password']) . '\'');
             $result = $db->obj();
         }
         if (!empty($result)) {
@@ -45,33 +45,45 @@ class Users {
      * 
      * @param  $nickname
      * @param  $password
-     * @param  $name
-     * @param  $lastname
-     * @param  $birthdate
      * @param  $email
-     * @param  $role
      * 
      * @return
      */
-    public function createUser($nickname, $password, $name, $lastname, $birthdate, $email, $role) {
+    public function createUser($nickname, $password, $email) {
         $db = &$GLOBALS['db'];
-        $db->query("insert into users (username,password,name,lastname, IP, birthdate, email, role) values (
+        $db->query("insert into users (username,password, IP, email, role) values (
                               '" . $db->clean(strtolower($nickname)) . "', 
                               '" . $db->clean($db->clean(md5($password . 'V1V4fDA'))) . "',
-                              '" . $db->clean($name) . "', 	
-                              '" . $db->clean($lastname) . "',
-                              '" . $_SERVER['REMOTE_ADDR'] . "', 
-                              '" . $db->clean($birthdate) . "', 	
+                              '" . $_SERVER['REMOTE_ADDR'] . "', 	
                               '" . $db->clean(strtolower($email)) . "',
-                              " . $db->clean($role) . " )");
+                                   1 )");
         if ($this->getUserId($nickname))
             return true;
         else
             return false;
     }
 
-    public function modifyUser($param, $value) {
+    /**
+     * Actualiza el perfil de un usuario
+     * @param  $name
+     * @param  $lastname
+     * @param  $birthdate
+     * @param  $location
+     * 
+     * @return
+     */
+    public function updateUser($name, $lastname, $birthdate, $location) {
+        $db = &$GLOBALS['db'];
+
+        $db->query('UPDATE users
+                        SET name = \'' . $db->clean($name) . '\', 
+                            lastname = \'' . $db->clean($lastname) . '\', 
+                            birthdate = \'' . $db->clean($birthdate) . '\', 
+                            location = \'' . $db->clean($location) . '\'
+                        WHERE 
+                        id= '. $_SESSION['userid'] );
         
+        return true;
     }
 
     /**
@@ -114,7 +126,15 @@ class Users {
     public function getUserRole() {
         return $this->role;
     }
-
+    
+    /**
+     * Retorna la info del usuario
+     * @return userid
+     */
+    public function getUserInfo($userid) {
+        $db = &$GLOBALS['db'];
+        $db->query('select name, lastname, location, birthdate from users where id= '.$userid );
+        return $db->getArray();
+    }
 }
-
 ?>

@@ -19,6 +19,15 @@ $(document).ready(function() {
                         to: $("#targetUser").val()
                     },
                     success: function(data) {
+                        if($.trim(data) === "OK"){
+                            $("#monitor").append("<p><b>"+$("#sourceUser").val()+"</b>: " +  text + "</p>" );
+                        }
+                        else if($.trim(data) !== "OK"){
+                            $("#monitor").append("<p style='color:red;'><b>"+$("#sourceUser").val()+"</b>: Error sending message: " +  text + "</p>" );
+                        }
+                        $("#monitor").prop({
+                            scrollTop: $("#monitor").prop("scrollHeight")
+                        });
                     }	
                 })
             }  

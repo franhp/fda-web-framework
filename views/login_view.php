@@ -1,11 +1,10 @@
-<h2>Login</h2>
 <?php
 
 $user = new Login();
 if(!$user->isLogged()) {
 
 	echo '
-	<div id="loginBox" class="loginBox">
+	<h2>Login</h2><div id="loginBox" class="loginBox">
 	<form method="post" id="login">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
@@ -23,7 +22,7 @@ if(!$user->isLogged()) {
 }
 else {
 	echo '
-	<div id="loginBox"  class="loginBox">
+	<h2>Logout</h2><div id="loginBox"  class="loginBox">
 	<form method="post" id="login" style="display: none;">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
@@ -53,9 +52,10 @@ function logout_script(){
 					data:  { logout: 'true' },
 					success: function(data) {
 						if(data=='OK'){
-							$('#logout').html('".LOGGEDOUT."');
+							/*$('#logout').html('".LOGGEDOUT."');
 							$('#login').show();
-                                                        $('#logout').html('');
+                                                        $('#logout').html('');*/
+                                                        $(window.location).attr('href', '".$settings->siteurl."/en/login');
 						}
 						else{
                                                         $('#result').html('');
@@ -80,9 +80,10 @@ function login_script(){
 					data: $(this).serialize(),
 					success: function(data) {
 						if(data!='ERROR'){
-                                                        $('#loginBox').fadeOut(500);
+                                                        /*$('#loginBox').fadeOut(500);
 							$('#result').html('".WELCOME."'+data);
-							$('#logout').show();
+							$('#logout').show();*/
+                                                        $(window.location).attr('href', '".$settings->siteurl."/en/client');
 						}
 						else{
                                                 $('#result').html('')
