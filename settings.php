@@ -71,6 +71,7 @@ class Settings {
 			
 			/* Other functions */
 			require_once 'includes/blog.class.php';
+                        require_once 'includes/login.oauth.class.php';
 	}
     
     /**

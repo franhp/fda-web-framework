@@ -20,8 +20,8 @@ class Users {
 
         if (isset($_SESSION['userid']) && !empty($_SESSION['userid'])) {
             $db->query('select id,username,role
-						 from users 
-						 where id=' . $_SESSION['userid']);
+                         from users 
+                         where id=' . $_SESSION['userid']);
             $result = $db->obj();
         } else if (isset($_COOKIE['remember'])) {
             $db->query('select id,username,role
@@ -49,16 +49,21 @@ class Users {
      * 
      * @return
      */
-    public function createUser($nickname, $password, $email) {
+    public function createUser($nickname, $password, $email, $oauth) {
+        $_SESSION['register'] = null;
         $db = &$GLOBALS['db'];
         $db->query("insert into users (username,password, IP, email, role) values (
-                              '" . $db->clean(strtolower($nickname)) . "', 
-                              '" . $db->clean($db->clean(md5($password . 'V1V4fDA'))) . "',
-                              '" . $_SERVER['REMOTE_ADDR'] . "', 	
-                              '" . $db->clean(strtolower($email)) . "',
-                                   1 )");
-        if ($this->getUserId($nickname))
+                      '" . $db->clean(strtolower($nickname)) . "', 
+                      '" . $db->clean($db->clean(md5($password . 'V1V4fDA'))) . "',
+                      '" . $_SERVER['REMOTE_ADDR'] . "', 	
+                      '" . $db->clean(strtolower($email)) . "',
+                      '" . $db->clean($oauth) . "',
+                           1 )");
+
+        if ($this->getUserId($nickname)) {
+            $_SESSION['register'] = array('nick' => $nickname, 'oauth' => $oauth);
             return true;
+        }
         else
             return false;
     }
@@ -81,8 +86,8 @@ class Users {
                             birthdate = \'' . $db->clean($birthdate) . '\', 
                             location = \'' . $db->clean($location) . '\'
                         WHERE 
-                        id= '. $_SESSION['userid'] );
-        
+                        id= ' . $_SESSION['userid']);
+
         return true;
     }
 
@@ -126,15 +131,55 @@ class Users {
     public function getUserRole() {
         return $this->role;
     }
-    
+
     /**
      * Retorna la info del usuario
      * @return userid
      */
     public function getUserInfo($userid) {
         $db = &$GLOBALS['db'];
-        $db->query('select name, lastname, location, birthdate from users where id= '.$userid );
+        $db->query('select name, lastname, location, birthdate from users where id= ' . $userid);
         return $db->getArray();
     }
+
+    public function checkUser($uid, $oauth_provider, $username) {
+
+        $db = &$GLOBALS['db'];
+
+        // si l'usuari s'acava d registrar
+
+        if (!empty($_SESSION['register'])) {
+
+            //comprovem si l'usuari ja s'havia registrar en la xarxa social
+
+            $db->query("SELECT * FROM `users` WHERE oauth_uid = '$uid' and oauth_provider = '$oauth_provider'");
+            $array = $db->getArray();
+            if (empty($array)) {
+
+                // si no ho havia fet, actualitzem les seves dades amb el nou uid que ens proporciona la xarxa social
+
+                $db->query('UPDATE users
+                                SET oauth_uid = \'' . $db->clean($uid) . '\', 
+                                    oauth_provider = \'' . $db->clean($oauth_provider) . '\', 
+                                WHERE 
+                                id= ' . $_SESSION['userid']);
+            }
+        }
+
+        //després agafem les dades per feu un login normal
+
+        $db->query("SELECT * FROM `users` WHERE oauth_uid = '$uid' and oauth_provider = '$oauth_provider'");
+        $array = $db->getArray();
+
+        if (!empty( $array)) {
+            // si l'usuari existeix es retornem l'array
+            return  $array;
+        }
+
+        //sino retornem null
+        return null;
+    }
+
 }
+
 ?>
