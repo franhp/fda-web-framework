@@ -8,7 +8,6 @@
  * @author Hector Costa
  * @version 1.0
  */
-
 class Chat {
 
     var $db;
@@ -35,14 +34,43 @@ class Chat {
      * @return boolean
      */
     public function createRoom($name, $description) {
-        $name = $this->db->clean($name);
-        $description = $this->db->clean($description);
-        $this->db->query("insert into rooms (name, description) values ('" . $name . "', '" . $description . "').");
+        if ($name != "" && $description != "") {
+            $name = $this->db->clean($name);
+            $description = $this->db->clean($description);
+            $this->db->query("insert into rooms (name, description) values ('" . $name . "', '" . $description . "')");
 
-        if ($this->getRoomId($name)) {
-            return true;
-        }
-        else
+            if ($this->getRoomId($name)) {
+                return true;
+            }
+            else
+                return false;
+        }else
+            return false;
+    }
+
+    /**
+     * Actualitza una room de la bd
+     * @param $id
+     * @return boolean
+     */
+    public function updateRoom($id, $name, $description) {
+        if ($name != "" && $description != "") {
+            $id = $this->db->clean($id);
+            $name = $this->db->clean($name);
+            $description = $this->db->clean($description);
+
+            if (is_numeric($id)) {
+                $this->db->query("update rooms set name='" . $name . "', description ='" . $description . "' where roomid = $id");
+
+                if (!$this->getRoomId($name)) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }else
             return false;
     }
 
@@ -73,10 +101,11 @@ class Chat {
      * @return roomid
      */
     public function getRoomId($name) {
-        $this->db->query('select idroom from rooms where name=\'' . $name . '\'');
+        $this->db->query('select roomid from rooms where name=\'' . $name . '\'');
+        
         $result = $this->db->obj();
         foreach ($result as $room)
-            $roomid = $room->id;
+            $roomid = $room->roomid;
         if (empty($roomid))
             return false;
         else

@@ -112,10 +112,28 @@ if (isset($_POST['createRoom'])) {
 }
 
 /**
+ * Actualitza una sala
+ */
+if (isset($_POST['updateRoom'])) {
+
+    if (empty($_POST['roomid'])) {
+        if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom']))
+            echo "OK";
+        else
+            echo "ERROR";
+    } else {
+        if ($chat->updateRoom($_POST['roomid'], $_POST['nameRoom'], $_POST['descriptionRoom']))
+            echo "OK";
+        else
+            echo "ERROR";
+    }
+}
+
+/**
  * Borrar una sala
  */
 if (isset($_POST['deleteRoom'])) {
-    if ($chat->deleteRoom($_POST['idRoom']))
+    if ($chat->deleteRoom($_POST['deleteRoom']))
         echo "OK";
     else
         echo "ERROR";
