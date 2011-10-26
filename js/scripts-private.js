@@ -2,7 +2,7 @@ $(document).ready(function() {
                 
     $("#sentButton").click( function(){
         
-        if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 5){   
+        if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){   
                   
             var text = $("#messageTxt").val();
                   
@@ -37,7 +37,7 @@ $(document).ready(function() {
     $("#messageTxt").bind('keypress', function(e) {
         
         if(e.keyCode==13){
-            if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 5){   
+            if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){   
                 // Enter pressed... do anything here...
                 var text = $("#messageTxt").val();
                 
@@ -78,7 +78,7 @@ $(document).ready(function() {
 });     
                 
 function updateMonitor(){
-    if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 5){    
+    if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){    
 
         $.ajax({
             type: 'POST',

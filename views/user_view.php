@@ -46,7 +46,7 @@ if (is_string($username)) {
             
                         <label id="location-label">Ingresa tu localidad<br><input type="text" id="location" name="location" value="<?= $userInfo['location'] ?>" tabindex="1" title="Ingresa tu localidad" class=""> <span></span></label>
             
-                        <label id="date-label">Fecha de nacimiento<br>
+                        <b>Fecha de nacimiento</b><br>
                             <?php
                             $dates = explode("-", $userInfo['birthdate']);
                             ?>
@@ -102,8 +102,8 @@ if (is_string($username)) {
                                 ?>
                             </select>
                 
-                            <span name="fecha"></span></label>
                         <div id="results" style="display:none;"></div>
+                        <br>
                         <input type="submit" id="submit" value="Enviar" style="width: 80px; margin-top: 15px" />
                         <input type="hidden" name="update"/>
             

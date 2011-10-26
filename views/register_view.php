@@ -1,5 +1,6 @@
 <?php
 $settings = new Settings();
+echo $_SESSION['register']."<br>";
 ?>
 <h2>Register</h2>
 <script src="<?= $settings->siteurl ?>/js/register_form.js" type="text/javascript"></script>
@@ -50,10 +51,10 @@ $settings = new Settings();
                     $("#results").fadeIn(500);
                 }
                 else if( data=='twitter' ){
-                    $(window.location).attr('href', '<?= $settings->siteurl ?>/en/login/twitter');
+                    $(window.location).attr('href', '<?= $settings->siteurl ?>/en/login/twitter/');
                 }
                 else if( data=='facebook' ){
-                    $(window.location).attr('href', '<?= $settings->siteurl ?>/en/login/facebook');
+                    $(window.location).attr('href', '<?= $settings->siteurl ?>/en/login/facebook/');
                 }
             }
         })
@@ -79,14 +80,13 @@ $settings = new Settings();
 
         <label id="email-label">Email<br><input type="text" id="email" name="email" tabindex="4" autocomplete="on" title="Ingresa tu direccion de email" class=""> <span></span></label>
 
-        <label id="oauth-label" style="width: 400;">Vincular cuenta con red social:<br>
-            <input style="width: 15px" type="radio" name="oauth" value="none" checked/> No<br>
-            <input style="width: 15px" type="radio" name="oauth" value="facebook"/> Facebook<br>
-            <input style="width: 15px" type="radio" name="oauth" value="twitter"/> Twitter
-        </label>
+        <b>Vincular cuenta con red social:</b><br>
+        <input style="width: 15px" type="radio" name="oauth" value="none" class="oauth" checked> No<br>
+        <input style="width: 15px" type="radio" name="oauth" value="facebook" class="oauth" > Facebook<br>
+        <input style="width: 15px" type="radio" name="oauth" value="twitter" class="oauth" > Twitter
 
-        <input type="submit" id="submit" value="Enviar" style="width: 80px; margin-top: 15px" />
+
+        <br><input type="submit" id="submit" value="Enviar" style="width: 80px; margin-top: 15px" />
 
     </form>
-
 </div>

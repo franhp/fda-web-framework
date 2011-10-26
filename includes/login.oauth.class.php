@@ -12,7 +12,7 @@ class Oauth extends Login {
 
         $twitteroauth = new TwitterOAuth(YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET);
         // Requesting authentication tokens, the parameter is the URL we will be redirected to
-        $request_token = $twitteroauth->getRequestToken($settings->siteurl . '/login/getTwitterData');
+        $request_token = $twitteroauth->getRequestToken($settings->siteurl . '/en/login/getTwitterData/');
 
         // Saving them into the session
 
@@ -23,8 +23,8 @@ class Oauth extends Login {
         if ($twitteroauth->http_code == 200) {
             // Let's generate the URL and redirect
             $url = $twitteroauth->getAuthorizeURL($request_token['oauth_token']);
-            echo '<h3>Redireccionando a twitter para login...</h3><meta http-equiv="refresh" content="2;url='.$url.'">';
-            //header('Location: ' . $url);
+            //echo '<h3>Redireccionando a twitter para login...</h3><meta http-equiv="refresh" content="2;url=' . $url . '">';
+            header('Location: ' . $url);
         } else {
             echo $twitteroauth->http_code;
             // It's a bad idea to kill the script, but we've got to know when there's an error.
@@ -48,6 +48,7 @@ class Oauth extends Login {
 
         $session = $facebook->getSession();
 
+
         if (!empty($session)) {
             # Active session, let's try getting the user id (getUser()) and user info (api->('/me'))
             try {
@@ -56,12 +57,11 @@ class Oauth extends Login {
             } catch (Exception $e) {
                 
             }
-
             if (!empty($user)) {
                 # User info ok? Let's print it (Here we will be adding the login and registering routines)
-                echo '<pre>';
-                print_r($user);
-                echo '</pre><br/>';
+                /* echo '<pre>';
+                  print_r($user);
+                  echo '</pre><br/>'; */
 
                 $username = $user['name'];
                 $userdata = $this->checkUser($uid, 'facebook', $username);
@@ -85,8 +85,8 @@ class Oauth extends Login {
                         WHERE 
                         username=\'' . $_SESSION['username'] . '\'');
 
-                       echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';                    
-                      //header("Location: " . $settings->siteurl . "/en/login.");
+                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';                    
+                    header("Location: " . $settings->siteurl . "/en/client");
                 }
                 else
                     echo "USUARIO NO ENCONTRADO";
@@ -97,12 +97,18 @@ class Oauth extends Login {
         } else {
             # There's no active session, let's generate one
             $login_url = $facebook->getLoginUrl();
-            echo '<h3>Redireccionando a facebook para login...</h3><meta http-equiv="refresh" content="2;url='.$login_url.'">';
-            //header("Location: " . $login_url);
+            //echo '<h3>Redireccionando a facebook para login...</h3><meta http-equiv="refresh" content="2;url='.$login_url.'">';
+            header("Location: " . $login_url);
         }
     }
 
     public function getTwitterData() {
+
+        $settings = new Settings();
+        $db = &$GLOBALS['db'];
+
+        require 'oauth/twitter/twitteroauth.php';
+        require 'oauth/config/twconfig.php';
 
         if (!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])) {
             // We've got everything we need
@@ -114,19 +120,20 @@ class Oauth extends Login {
             // Let's get the user's info
             $user_info = $twitteroauth->get('account/verify_credentials');
             // Print user's info
-            echo '<pre>';
-            print_r($user_info);
-            echo '</pre><br/>';
+            /* echo '<pre>';
+              print_r($user_info);
+              echo '</pre><br/>'; */
             if (isset($user_info->error)) {
-                header("Location: " . $settings->siteurl . "/en/login/twitter.");
+                header("Location: " . $settings->siteurl . "/web.xinxat.com/en/client");
+                //echo "ERROR";
             } else {
                 $uid = $user_info->id;
                 $username = $user_info->name;
-                $user = new UserData();
 
-                $userdata = $this->checkUser($uid, 'facebook', $username);
+                $userdata = $this->checkUser($uid, 'twitter', $username);
+
                 if (!empty($userdata)) {
-                    session_start();
+
                     $_SESSION['id'] = $userdata['id'];
                     $_SESSION['oauth_id'] = $uid;
                     $_SESSION['username'] = $userdata['username'];
@@ -138,22 +145,21 @@ class Oauth extends Login {
                     $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
                     $_SESSION['token'] = @md5($userdata['password'] . $_SESSION['lastlogin'] . $_SESSION['IP']);
 
-                    $db = &$GLOBALS['db'];
-
                     $db->query('UPDATE users
                         SET lastlogin = \'' . $_SESSION['lastlogin'] . '\', IP = \'' . $_SESSION['IP'] . '\'
                         WHERE 
                         username=\'' . $_SESSION['username'] . '\'');
-                    echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';  
-                    //header("Location: " . $settings->siteurl . "/en/login.");
-                }
-                else
+                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';  
+                    header("Location: " . $settings->siteurl . "/web.xinxat.com/en/client");
+                } else {
+                    echo $_SESSION['register'] . "<br>";
                     echo "USUARIO NO ENCONTRADO";
+                }
             }
         } else {
             // Something's missing, go back to square 1
-            echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="0;url='. $settings->siteurl . '"/en/login/twitter">';  
-            //header("Location: " . $settings->siteurl . "/en/login/twitter");
+            //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="5;url='. $settings->siteurl . '"/en/login/twitter/">';  
+            header("Location: " . $settings->siteurl . "/web.xinxat.com/en/login/twitter");
         }
     }
 

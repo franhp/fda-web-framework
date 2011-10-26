@@ -5,10 +5,11 @@ $options = $settings->urlParameters(4);
 if (!empty($options)) {
 
     $user = new Oauth();
-
+    
     if ($options == "twitter") {
         $user->doLoginTwitter();
     } else if ($options == "facebook") {
+        
         $user->doLoginFacebook();
     } else if ($options == "getTwitterData") {
         $user->getTwitterData();
@@ -20,13 +21,18 @@ if (!empty($options)) {
     if (!$user->isLogged()) {
 
         echo '
-	<h2>Login</h2><div id="loginBox" class="loginBox">
+	
+         <div id="other" style="position: absolute; width: 200px; height: 120px; margin-left: 185px; "><h2>Social Login</h2>
+            <a href="'.$settings->siteurl.'/en/login/twitter/" border=0><img src="'.$settings->siteurl.'/img/social/tw_login.png" alt="twitter-login" /> </a> 
+            <a href="'.$settings->siteurl.'/en/login/facebook/" border=0><img src="'.$settings->siteurl.'/img/social/fb_login.png" alt="twitter-login" /></a>
+	</div>
+        <h2>Login</h2><div id="loginBox" class="loginBox">
 	<form method="post" id="login">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
 	Remember: <input type="checkbox" name="remember" id="remember"><br>
-	<input type="submit" value="' . LOGIN . '">
-	</form>
+        <input type="submit" value="' . LOGIN . '">
+        </form>
 	<form id="logout" style="display: none;">
 		<input type="submit" value="' . LOGOUT . '">
 	</form>
@@ -37,12 +43,15 @@ if (!empty($options)) {
         login_script();
     } else {
         echo '
-	<h2>Logout</h2><div id="loginBox"  class="loginBox">
+	<h2>Logout</h2>
+        <div id="loginBox"  class="loginBox">
 	<form method="post" id="login" style="display: none;">
 	Username: <input type="text" name="username" id="username"><br>
 	Password: <input type="password" name="password" id="password"><br>
 	Remember: <input type="checkbox" name="remember" id="remember"><br>
 	<input type="submit" value="' . LOGIN . '">
+        <a href="'.$settings->siteurl.'/en/login/twitter/" border=0><img src="'.$settings->siteurl.'/img/social/tw_login.png" alt="twitter-login" /> </a> 
+        <a href="'.$settings->siteurl.'/en/login/facebook/" border=0><img src="'.$settings->siteurl.'/img/social/fb_login.png" alt="twitter-login" /></a>
 	</form>
 	<form id="logout">
 		' . WELCOME . $user->username . '

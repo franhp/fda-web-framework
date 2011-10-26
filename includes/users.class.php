@@ -52,7 +52,7 @@ class Users {
     public function createUser($nickname, $password, $email, $oauth) {
         $_SESSION['register'] = null;
         $db = &$GLOBALS['db'];
-        $db->query("insert into users (username,password, IP, email, role) values (
+        $db->query("insert into users (username,password, IP, email, oauth_provider, role) values (
                       '" . $db->clean(strtolower($nickname)) . "', 
                       '" . $db->clean($db->clean(md5($password . 'V1V4fDA'))) . "',
                       '" . $_SERVER['REMOTE_ADDR'] . "', 	
@@ -61,7 +61,7 @@ class Users {
                            1 )");
 
         if ($this->getUserId($nickname)) {
-            $_SESSION['register'] = array('nick' => $nickname, 'oauth' => $oauth);
+            $_SESSION['register'] = $nickname;
             return true;
         }
         else
@@ -150,20 +150,13 @@ class Users {
 
         if (!empty($_SESSION['register'])) {
 
-            //comprovem si l'usuari ja s'havia registrar en la xarxa social
+            // si no ho havia fet, actualitzem les seves dades amb el nou uid que ens proporciona la xarxa social
 
-            $db->query("SELECT * FROM `users` WHERE oauth_uid = '$uid' and oauth_provider = '$oauth_provider'");
-            $array = $db->getArray();
-            if (empty($array)) {
-
-                // si no ho havia fet, actualitzem les seves dades amb el nou uid que ens proporciona la xarxa social
-
-                $db->query('UPDATE users
+            $db->query('UPDATE users
                                 SET oauth_uid = \'' . $db->clean($uid) . '\', 
-                                    oauth_provider = \'' . $db->clean($oauth_provider) . '\', 
+                                    oauth_provider = \'' . $db->clean($oauth_provider) . '\'
                                 WHERE 
-                                id= ' . $_SESSION['userid']);
-            }
+                                username= \'' . $_SESSION['register'] . '\'');
         }
 
         //després agafem les dades per feu un login normal
@@ -171,9 +164,18 @@ class Users {
         $db->query("SELECT * FROM `users` WHERE oauth_uid = '$uid' and oauth_provider = '$oauth_provider'");
         $array = $db->getArray();
 
-        if (!empty( $array)) {
+        if ($_SESSION['register'] != $array['username']) {
+
+            //es que se ha registrado con uid duplicado, borramos el último usuario registrado
+            $db->query("DELETE FROM users WHERE username = '" . $_SESSION['register'] . "'");
+        }
+
+
+        $_SESSION['register'] = null;
+
+        if (!empty($array)) {
             // si l'usuari existeix es retornem l'array
-            return  $array;
+            return $array;
         }
 
         //sino retornem null

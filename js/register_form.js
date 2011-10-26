@@ -167,7 +167,7 @@ $(document).ready(function() {
 			
         $('input').each(function(index) {
 				
-            if ($(this).next("span").text() == "Incorrecto" || $(this).next("span").text() == "Demasiado corto" || $(this).next("span").text() == "Ya existe" || $(this).next("span").text() == "Comprueba este campo" ||   $(this).next("span").text().length == 0 && $(this).attr('id') != "submit")
+            if ($(this).next("span").text() == "Incorrecto" || $(this).next("span").text() == "Demasiado corto" || $(this).next("span").text() == "Ya existe" || $(this).next("span").text() == "Comprueba este campo" ||   $(this).next("span").text().length == 0 && $(this).attr('id') != "submit" && $(this).attr('class') != "oauth")
             {
 					
                 $(this).next("span").fadeIn(500);
