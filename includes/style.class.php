@@ -25,13 +25,14 @@ class Style {
 
         //array con el menu
         $menu = array(
-            array('section' => '', 'title' => 'Home', 'url' => '/web.xinxat.com/en/', 'show' => 'always'),
-            array('section' => 'blog', 'title' => 'Blog', 'url' => '/web.xinxat.com/en/blog', 'show' => 'always'),
-            array('section' => 'register', 'title' => 'Register', 'url' => '/web.xinxat.com/en/register', 'show' => 'nologged'),
-            array('section' => 'user', 'title' => 'User', 'url' => '/web.xinxat.com/en/user', 'show' => 'logged'),
-            array('section' => 'client', 'title' => 'Client', 'url' => '/web.xinxat.com/en/client', 'show' => 'logged'),
-            array('section' => 'login', 'title' => 'Login', 'url' => '/web.xinxat.com/en/login', 'show' => 'nologged'),
-            array('section' => 'login', 'title' => 'Logout', 'url' => '/web.xinxat.com/en/login', 'show' => 'logged')
+            array('section' => '', 'title' => 'Home', 'url' => $settings->siteurl, 'show' => 'always'),
+            array('section' => 'blog', 'title' => 'Blog', 'url' => $settings->siteurl.'/en/blog', 'show' => 'always'),
+            array('section' => 'register', 'title' => 'Register', 'url' => $settings->siteurl.'/en/register', 'show' => 'nologged'),
+            array('section' => 'user', 'title' => 'User', 'url' => $settings->siteurl.'/en/user', 'show' => 'logged'),
+            array('section' => 'client', 'title' => 'Client', 'url' => $settings->siteurl.'/en/client', 'show' => 'logged'),
+            array('section' => 'login', 'title' => 'Login', 'url' => $settings->siteurl.'/en/login', 'show' => 'nologged'),
+            array('section' => 'admin', 'title' => 'Admin', 'url' => $settings->siteurl.'/en/admin/client', 'show' => 'logged'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/login', 'show' => 'logged')
         );
 
         echo '<div id="header">
@@ -105,10 +106,11 @@ class Style {
 
         //array con el menu
         $menu = array(
-            array('section' => '', 'title' => 'Home', 'url' => '/web.xinxat.com/en/'),
-            array('section' => 'user', 'title' => 'User', 'url' => '/web.xinxat.com/en/user'),
-            array('section' => 'client', 'title' => 'Client', 'url' => '/web.xinxat.com/en/client'),
-            array('section' => 'login', 'title' => 'Logout', 'url' => '/web.xinxat.com/en/login')
+            array('section' => '', 'title' => 'Home', 'url' => $settings->siteurl),
+            array('section' => 'user', 'title' => 'User', 'url' => $settings->siteurl.'/en/user'),
+            array('section' => 'client', 'title' => 'Client', 'url' => $settings->siteurl.'/en/client'),
+            array('section' => 'admin', 'title' => 'Admin', 'url' => $settings->siteurl.'/en/admin/client'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/en/login')
         );
 
         echo '<div id="header">
@@ -134,7 +136,8 @@ class Style {
     }
 
     public function footerClient() {
-        echo '</div><div id="footer"><i><a href="http://xinxat.com">Xinxat.com</a> * Programming Dept.</i></div></div></body></html>';
+        $settings = new Settings();
+        echo '</div><div id="footer"><i><a href="'.$settings->siteurl.'">Xinxat.com</a> * Programming Dept.</i></div></div></body></html>';
     }
 
 }

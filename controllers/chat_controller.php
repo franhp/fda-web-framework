@@ -3,10 +3,10 @@
 /**
  * Enviar un msg al echo server
  */
-
 include_once '../settings.php';
 $settings = new Settings();
 $settings->bootstrap();
+$chat = new Chat();
 
 if (isset($_POST['msg_sent'])) {
 
@@ -18,9 +18,9 @@ if (isset($_POST['msg_sent'])) {
     if (isset($_POST['to'])) {
         $url = 'http://projecte-xinxat.appspot.com/messages';
         $xmlMessage = array(
-                '@attributes' => array(
-                    'to' => $_POST['to'],
-                    'from' => $_SESSION['username'])
+            '@attributes' => array(
+                'to' => $_POST['to'],
+                'from' => $_SESSION['username'])
             , 'body' => htmlspecialchars($_POST['msg_sent'], ENT_QUOTES)
         );
 
@@ -62,8 +62,6 @@ if (isset($_POST['msg_sent'])) {
  */
 if (isset($_POST['msg_req'])) {
 
-
-
     if (isset($_POST['to'])) {
         $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'];
     }
@@ -86,8 +84,40 @@ if (isset($_POST['msg_req'])) {
     else {
         echo $xml->body;
     }
-    
+
     curl_close($handler);
     /* if (!similar_text($resultado, "EMPTY"))
       echo $resultado; */
 }
+
+/**
+ * Lista de salas
+ */
+if (isset($_POST['listRooms'])) {
+    $rooms = $chat->listRooms();
+    if ($rooms)
+        echo $rooms;
+    else
+        echo "ERROR";
+}
+
+/**
+ * Crear una sala
+ */
+if (isset($_POST['createRoom'])) {
+    if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom']))
+        echo "OK";
+    else
+        echo "ERROR";
+}
+
+/**
+ * Borrar una sala
+ */
+if (isset($_POST['deleteRoom'])) {
+    if ($chat->deleteRoom($_POST['idRoom']))
+        echo "OK";
+    else
+        echo "ERROR";
+}
+
