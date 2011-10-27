@@ -35,7 +35,7 @@ $(document).ready(function() {
     })
     */
                 
-    $("#messageTxt").bind('keypress', function(e) {
+    $("#messageTxt").bind(($.browser.opera ? "keypress" : "keydown"), function (e) {
         
         if(e.keyCode==13){
             if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){   

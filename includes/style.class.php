@@ -91,11 +91,11 @@ class Style {
             <style>
 		#chatWrapper{width: 766px; height: 300px; border: 2px solid black; text-align: left; font-family: courier;}
 		#chatDiv{float: left; width: 510px; height: 272px; text-align: left;}
-		#chatRoster{float: left; width: 130px; height: 278px;  border-left: 2px solid black; text-align: left; overflow-y: auto;}
+		#chatRoster{float: left; width: 130px; height: 277px;  border-left: 2px solid black; text-align: left; overflow-y: auto; margin-bottom: 1px;}
 		#chatMonitor{width: 510px; height: 278px; overflow-x: hidden; overflow-y: auto;}
 		#chatMonitor p{margin: 0; padding: 2px 0px 0px 5px;}
 		#chatRooms{float: left; width: 120px; height: 300px;  border-right: 2px solid black; text-align: left; overflow-y: auto;}
-		.chatText{width: 644px; margin:0;padding:0; height: 21px; font-size: 14px;}
+		.chatText{width: 641px; margin:0;padding:0; height: 21px; font-size: 14px; float:right; margin-right: 1px;}
 		.sentButton, .requestButton{ width: 60px; margin-left: 6px;}
 		.updateMonitorSpan{color: green;}
 	    </style>
