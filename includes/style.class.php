@@ -30,9 +30,9 @@ class Style {
             array('section' => 'register', 'title' => 'Register', 'url' => $settings->siteurl.'/en/register', 'show' => 'nologged'),
             array('section' => 'user', 'title' => 'User', 'url' => $settings->siteurl.'/en/user', 'show' => 'logged'),
             array('section' => 'client', 'title' => 'Client', 'url' => $settings->siteurl.'/en/client', 'show' => 'logged'),
-            array('section' => 'login', 'title' => 'Login', 'url' => $settings->siteurl.'/en/login', 'show' => 'nologged'),
             array('section' => 'admin', 'title' => 'Admin', 'url' => $settings->siteurl.'/en/admin/client', 'show' => 'logged'),
-            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/login', 'show' => 'logged')
+            array('section' => 'login', 'title' => 'Login', 'url' => $settings->siteurl.'/en/login', 'show' => 'nologged'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/en/login', 'show' => 'logged')
         );
 
         echo '<div id="header">
@@ -88,14 +88,17 @@ class Style {
             <script type="text/javascript" src="' . $settings->siteurl . '/external/ckeditor/adapters/jquery.js"></script>
             <!--<script type="text/javascript" src="' . $settings->siteurl . '/js/scripts-private.js"></script>-->
             <script type="text/javascript" src="/web.xinxat.com/js/scripts-private.js"></script>
-            <style>#requestMonitor{width: 750px; height: 12px; background-color: antiquewhite; border: 2px solid black; margin: auto; text-align: center; color: red; font-size: 12px; padding: 5px; margin-bottom: 10px;}
-                    #chatWrapper{width: 750px; height: 300px; background-color: aliceblue; border: 2px solid black; margin: auto; text-align: left; padding: 5px;}
-                    #monitor{width: 686px; height: 265px; padding: 5px; overflow-x: hidden; overflow-y: auto;}
-                    #monitor p{margin: 0; padding: 0px 0px 5px 0px;}
-                    .chatText{width: 655px;}
-                    .sentButton, .requestButton{ width: 60px; margin-left: 6px;}
-                    .updateMonitorSpan{color: green;}
-            </style>
+            <style>
+		#chatWrapper{width: 766px; height: 300px; border: 2px solid black; text-align: left; font-family: courier;}
+		#chatDiv{float: left; width: 510px; height: 272px; text-align: left;}
+		#chatRoster{float: left; width: 130px; height: 278px;  border-left: 2px solid black; text-align: left; overflow-y: auto;}
+		#chatMonitor{width: 510px; height: 278px; overflow-x: hidden; overflow-y: auto;}
+		#chatMonitor p{margin: 0; padding: 2px 0px 0px 5px;}
+		#chatRooms{float: left; width: 120px; height: 300px;  border-right: 2px solid black; text-align: left; overflow-y: auto;}
+		.chatText{width: 644px; margin:0;padding:0; height: 21px; font-size: 14px;}
+		.sentButton, .requestButton{ width: 60px; margin-left: 6px;}
+		.updateMonitorSpan{color: green;}
+	    </style>
         </head>
         <body>
         <div id="wrapper">';

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-                
+    /*      
     $("#sentButton").click( function(){
         
         if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 5 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){   
@@ -20,19 +20,20 @@ $(document).ready(function() {
                     },
                     success: function(data) {
                         if($.trim(data) === "OK"){
-                            $("#monitor").append("<p><b>"+$("#sourceUser").val()+"</b>: " +  text + "</p>" );
+                            $("#chatMonitor").append("<p><b>"+$("#sourceUser").val()+"</b>: " +  text + "</p>" );
                         }
                         else if($.trim(data) !== "OK"){
-                            $("#monitor").append("<p style='color:red;'><b>"+$("#sourceUser").val()+"</b>: Error sending message: " +  text + "</p>" );
+                            $("#chatMonitor").append("<p style='color:red;'><b>"+$("#sourceUser").val()+"</b>: Error sending message: " +  text + "</p>" );
                         }
-                        $("#monitor").prop({
-                            scrollTop: $("#monitor").prop("scrollHeight")
+                        $("#chatMonitor").prop({
+                            scrollTop: $("#chatMonitor").prop("scrollHeight")
                         });
                     }	
                 })
             }  
         }       
     })
+    */
                 
     $("#messageTxt").bind('keypress', function(e) {
         
@@ -56,13 +57,13 @@ $(document).ready(function() {
                         },
                         success: function(data) {
                             if($.trim(data) === "OK"){
-                                $("#monitor").append("<p><b>"+$("#sourceUser").val()+"</b>: " +  text + "</p>" );
+                                $("#chatMonitor").append("<p style='color: darkblue;'><b>&lt;"+$("#sourceUser").val()+"&gt;</b> " +  text + "</p>" );
                             }
                             else if($.trim(data) !== "OK"){
-                                $("#monitor").append("<p style='color:red;'><b>"+$("#sourceUser").val()+"</b>: Error sending message: " +  text + "</p>" );
+                                $("#chatMonitor").append("<p style='color:red;'><b>&lt;"+$("#sourceUser").val()+"&gt;</b> Error sending message: " +  text + "</p>" );
                             }
-                            $("#monitor").prop({
-                                scrollTop: $("#monitor").prop("scrollHeight")
+                            $("#chatMonitor").prop({
+                                scrollTop: $("#chatMonitor").prop("scrollHeight")
                             });
                         }	
                     })
@@ -90,9 +91,9 @@ function updateMonitor(){
             },
             success: function(data) {
                 if($.trim(data) != "nullchat"){
-                    $("#monitor").append("<p><b>"+$("#targetUser").val()+"</b>: " +  data + "</p>" );
-                    $("#monitor").prop({
-                        scrollTop: $("#monitor").prop("scrollHeight")
+                    $("#chatMonitor").append(data);
+                    $("#chatMonitor").prop({
+                        scrollTop: $("#chatMonitor").prop("scrollHeight")
                     });
                 }
             }	

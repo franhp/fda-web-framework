@@ -58,7 +58,7 @@ if (isset($_POST['msg_sent'])) {
 }
 
 /**
- * Recibir msg del echo server 
+ * Recibir msg del server
  */
 if (isset($_POST['msg_req'])) {
 
@@ -82,7 +82,8 @@ if (isset($_POST['msg_req'])) {
     if ($xml->show == 'chat')
         echo "nullchat";
     else {
-        echo $xml->body;
+       $from = xml_attribute($xml, 'from');
+       echo "<p><b>&lt;".$from."&gt;</b> ".$xml->body."</p>";
     }
 
     curl_close($handler);
@@ -137,5 +138,13 @@ if (isset($_POST['deleteRoom'])) {
         echo "OK";
     else
         echo "ERROR";
+}
+/**
+ * Retorna un atributo de un xml object
+ */
+function xml_attribute($object, $attribute)
+{
+    if(isset($object[$attribute]))
+        return (string) $object[$attribute];
 }
 
