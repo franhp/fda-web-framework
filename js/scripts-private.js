@@ -90,7 +90,7 @@ function updateMonitor(){
                 to: $("#sourceUser").val()
             },
             success: function(data) {
-                if($.trim(data) != "nullchat"){
+                if($.trim(data) != "wrong"){
                     $("#chatMonitor").append(data);
                     $("#chatMonitor").prop({
                         scrollTop: $("#chatMonitor").prop("scrollHeight")

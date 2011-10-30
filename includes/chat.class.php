@@ -28,6 +28,41 @@ class Chat {
     }
 
     /**
+     * Lista los usuarios de la bd
+     * @return stdObject
+     */
+    public function listUsers() {
+        $this->db->query("select id, username from users order by username");
+        return $this->db->obj();
+    }
+    
+    /**
+     * Lista las salas id+nombre donde accede un usuario
+     * @return stdObject
+     */
+    public function listUserRooms($id) {
+        if (is_numeric($id)) {
+            $this->db->query("SELECT rooms.roomid as roomid, rooms.name as roomname FROM rooms
+                                       LEFT JOIN access ON access.roomid=rooms.roomid
+                                       WHERE access.userid = " . $id);
+            return $this->db->obj();
+        }
+    }
+    
+    /**
+     * Lista las salas id+nombre donde no accede un usuario
+     * @return stdObject
+     */
+     public function listUserNoRooms($id) {
+        if (is_numeric($id)) {
+            $this->db->query("SELECT rooms.roomid as roomid, rooms.name as roomname FROM access 
+                                       LEFT JOIN rooms ON access.roomid !=rooms.roomid
+                                       WHERE access.userid != " . $id);
+            return $this->db->obj();
+        }
+    }
+
+    /**
      * Crea una room en la bd
      * @param $name
      * @param $description
@@ -102,7 +137,7 @@ class Chat {
      */
     public function getRoomId($name) {
         $this->db->query('select roomid from rooms where name=\'' . $name . '\'');
-        
+
         $result = $this->db->obj();
         foreach ($result as $room)
             $roomid = $room->roomid;
