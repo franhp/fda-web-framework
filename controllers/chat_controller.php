@@ -142,10 +142,30 @@ if (isset($_POST['updateRoom'])) {
 }
 
 /**
- * Borrar una sala
+ * Borra una sala
  */
 if (isset($_POST['deleteRoom'])) {
     if ($chat->deleteRoom($_POST['deleteRoom']))
+        echo "OK";
+    else
+        echo "ERROR";
+}
+
+/**
+ * Inserta un usuario en una sala
+ */
+if (isset($_POST['insertUserRoom'])) {
+    if ($chat->insertUserRoom($_POST['roomid'], $_POST['userid']))
+        echo "OK";
+    else
+        echo "ERROR";
+}
+
+/**
+ * Borra un usuario de una sala
+ */
+if (isset($_POST['removeUserRoom'])) {
+    if ($chat->removeUserRoom($_POST['roomid'], $_POST['userid']))
         echo "OK";
     else
         echo "ERROR";

@@ -35,29 +35,28 @@ class Chat {
         $this->db->query("select id, username from users order by username");
         return $this->db->obj();
     }
-    
+
     /**
      * Lista las salas id+nombre donde accede un usuario
      * @return stdObject
      */
     public function listUserRooms($id) {
         if (is_numeric($id)) {
-            $this->db->query("SELECT rooms.roomid as roomid, rooms.name as roomname FROM rooms
+            $this->db->query("select rooms.roomid as roomid, rooms.name as roomname FROM rooms
                                        LEFT JOIN access ON access.roomid=rooms.roomid
                                        WHERE access.userid = " . $id);
             return $this->db->obj();
         }
     }
-    
+
     /**
      * Lista las salas id+nombre donde no accede un usuario
      * @return stdObject
      */
-     public function listUserNoRooms($id) {
+    public function listUserNoRooms($id) {
         if (is_numeric($id)) {
-            $this->db->query("SELECT rooms.roomid as roomid, rooms.name as roomname FROM access 
-                                       LEFT JOIN rooms ON access.roomid !=rooms.roomid
-                                       WHERE access.userid != " . $id);
+            $this->db->query("select rooms.roomid as roomid, rooms.name as roomname from rooms where roomid not in (select roomid from access
+                                        where userid = " . $id . ")");
             return $this->db->obj();
         }
     }
@@ -97,7 +96,7 @@ class Chat {
             if (is_numeric($id)) {
                 $this->db->query("update rooms set name='" . $name . "', description ='" . $description . "' where roomid = $id");
 
-                if (!$this->getRoomId($name)) {
+                if ($this->getRoomId($name)) {
                     return true;
                 }
                 else
@@ -106,6 +105,59 @@ class Chat {
             else
                 return false;
         }else
+            return false;
+    }
+
+    /**
+     * Inserta un usuario en una sala
+     * @param $roomid
+     * @param $userid
+     * @return boolean
+     */
+    public function insertUserRoom($roomid, $userid) {
+
+        if (is_numeric($roomid) && is_numeric($userid)) {
+
+            if (!$this->getAccess($roomid, $userid)) {
+
+                $this->db->query("insert into access (roomid, userid, state, role) values (" . $roomid . ", " . $userid . ", 1, 1)");
+
+                if ($this->getAccess($roomid, $userid)) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+/**
+     * Borra un usuario de una sala
+     * @param $roomid
+     * @param $userid
+     * @return boolean
+     */
+    public function removeUserRoom($roomid, $userid) {
+
+        if (is_numeric($roomid) && is_numeric($userid)) {
+
+            if ($this->getAccess($roomid, $userid)) {
+                
+                $this->db->query("delete from access where roomid = " . $roomid . " AND userid = " . $userid );
+
+                if (!$this->getAccess($roomid, $userid)) {
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        else
             return false;
     }
 
@@ -145,6 +197,24 @@ class Chat {
             return false;
         else
             return $roomid;
+    }
+
+    /**
+     * Retorna la id de un access
+     * @param $roomid
+     * @param $userid
+     * @return $accessid
+     */
+    public function getAccess($roomid, $userid) {
+        $this->db->query('select accessid from access where roomid = ' . $roomid . ' AND userid=' . $userid . '');
+
+        $result = $this->db->obj();
+        foreach ($result as $access)
+            $accessid = $access->accessid;
+        if (empty($accessid))
+            return false;
+        else
+            return $accessid;
     }
 
 }
