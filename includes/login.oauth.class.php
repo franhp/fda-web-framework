@@ -85,7 +85,10 @@ class Oauth extends Login {
                         WHERE 
                         username=\'' . $_SESSION['username'] . '\'');
 
-                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';                    
+                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';   
+                    $chat = new Chat();
+                    $chat->updateDB();
+                    
                     header("Location: " . $settings->siteurl . "/en/client");
                 }
                 else
@@ -149,7 +152,11 @@ class Oauth extends Login {
                         SET lastlogin = \'' . $_SESSION['lastlogin'] . '\', IP = \'' . $_SESSION['IP'] . '\'
                         WHERE 
                         username=\'' . $_SESSION['username'] . '\'');
-                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';  
+                    //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';
+                    
+                    $chat = new Chat();
+                    $chat->updateDB();
+            
                     header("Location: " . $settings->siteurl . "/web.xinxat.com/en/client");
                 } else {
                     echo $_SESSION['register'] . "<br>";

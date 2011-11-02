@@ -54,10 +54,13 @@ class Login extends Users {
 
             $db->query('UPDATE users
                         SET lastlogin = \'' . $_SESSION['lastlogin'] . '\', IP = \'' . $_SESSION['IP'] . '\'
-                        WHERE 
-                        username=\'' . $db->clean($username) . '\' 
-                        and 
+                        WHERE username=\'' . $db->clean($username) . '\'  and 
                         password=\'' . $db->clean(md5($password . 'V1V4fDA')) . '\'');
+            
+            /* Actualizamos la bd del server*/
+            $chat = new Chat();
+            $chat->updateDB();
+            
             return true;
         }
         else

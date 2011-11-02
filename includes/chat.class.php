@@ -134,7 +134,8 @@ class Chat {
         else
             return false;
     }
-/**
+
+    /**
      * Borra un usuario de una sala
      * @param $roomid
      * @param $userid
@@ -145,8 +146,8 @@ class Chat {
         if (is_numeric($roomid) && is_numeric($userid)) {
 
             if ($this->getAccess($roomid, $userid)) {
-                
-                $this->db->query("delete from access where roomid = " . $roomid . " AND userid = " . $userid );
+
+                $this->db->query("delete from access where roomid = " . $roomid . " AND userid = " . $userid);
 
                 if (!$this->getAccess($roomid, $userid)) {
                     return true;
@@ -215,6 +216,63 @@ class Chat {
             return false;
         else
             return $accessid;
+    }
+
+    /**
+     * Actualiza la bd del server
+     */
+    public function updateDB() {
+        $url = 'http://projecte-xinxat.appspot.com/updateDB';
+
+        // abrimos la conexion
+        $handler = curl_init();
+
+        curl_setopt($handler, CURLOPT_URL, $url);
+        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handler, CURLOPT_HEADER, false);
+
+        curl_exec($handler);
+        curl_close($handler);
+    }
+
+    /*
+     * Lista los usuarios del roster / o un canal
+     */
+
+    function roster($room="") {
+        $url = 'http://projecte-xinxat.appspot.com/roster?room=' . $room;
+        // abrimos la conexion
+        $handler = curl_init();
+        curl_setopt($handler, CURLOPT_URL, $url);
+        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handler, CURLOPT_HEADER, false);
+        $result = curl_exec($handler);
+        $xml = @simplexml_load_string($result);
+        curl_close($handler);
+        echo '<select style="width: 100%; height: 277px;" id="username" multiple="multiple" size="1">';
+        if (trim($result) != "") {
+            foreach ($xml as $presence) {
+                $name = $this->xml_attribute($presence, 'from');
+                if ($presence->status == "online") {
+                    if ($name == $_SESSION['username'])
+                        echo '<option value="'.$name.'" style="color: green;" selected>' . $name . '</option>';
+                    else
+                        echo '<option value="'.$name.'" style="color: green;">' . $name . '</option>';
+                }
+
+                else if ($presence->status == "offline")
+                    echo '<option value="'.$name.'" style="color: grey;">' . $name . '</option>';
+            }
+        }
+        echo '</select>';
+    }
+
+    /**
+     * Retorna un atributo de un xml object
+     */
+    public function xml_attribute($object, $attribute) {
+        if (isset($object[$attribute]))
+            return (string) $object[$attribute];
     }
 
 }
