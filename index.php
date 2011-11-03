@@ -3,7 +3,6 @@
 require('settings.php');
 $settings = new Settings();
 $settings->bootstrap();
-
 $style = new Style();
 $section = $settings->urlParameters(3);
 if ($section != 'client') {
@@ -36,7 +35,11 @@ if ($section != 'client') {
 } else if (!empty($_SESSION['userid'])) {
     $style->headClient();
     $style->headerClient();
-    include 'views/client/home_view.php';
+    if ($settings->urlParameters(4) != "") {
+        include 'views/client/client_view.php';
+    } else {
+        include 'views/client/home_view.php';
+    }
     $style->footerClient();
 } else {
     header('Location: ' . $settings->siteurl . '');

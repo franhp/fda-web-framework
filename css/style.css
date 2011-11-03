@@ -13,15 +13,8 @@ body{
 
 /* Page design */
 
-#wrapper{width: 800px;margin:auto; margin-top: 35px; background-color: white; 
-         -moz-box-shadow: 6px 6px 10px #505050;
-         -webkit-box-shadow: 6px 6px 10px #505050;
-         box-shadow: 6px 6px 10px #505050;
-         margin-bottom: 35px;
-}
-#header{width: 800px; height: 60px; background: #292929;-webkit-border-top-left-radius:35px;
-        -moz-border-radius-topleft: 35px;
-        border-top-left-radius: 35px;}
+#wrapper{width: 800px;margin:auto; margin-top: 35px; background-color: white;-moz-box-shadow: 6px 6px 10px #505050;-webkit-box-shadow: 6px 6px 10px #505050;box-shadow: 6px 6px 10px #505050;margin-bottom: 35px;}
+#header{width: 800px; height: 60px; background: #292929;-webkit-border-top-left-radius:35px;-moz-border-radius-topleft: 35px;border-top-left-radius: 35px;}
 #menu{width: 100%; height: 30px; background: #292929;}
 .ulMenu{display: inline; padding:0; margin:7px; font-size: 125%; font-family: MetaBold, Trebuchet MS, sans-serif;}
 .liMenu{ float: left; margin-left: 15px; margin-right: 0px;list-style: none; }
@@ -30,7 +23,7 @@ body{
 .active{border-top: 3px solid #fff; color: #ff9933;}
 #content{width: 780px;padding: 10px; background-color: white; text-align:  left;}
 #footer{width: 780px; height: 12px; padding: 10px; background-color: #ff9933; text-align: right;}
-.logo{font-size: 350%; float:right;margin-right: 20px; margin-top: 8px;font-family: MetaBold, Trebuchet MS, sans-serif;font-weight: bold; color:white;}
+.logo{font-size: 350%; float:right;margin-right: 20px; margin-top: 8px;font-family: MetaBold, Trebuchet MS, sans-serif; font-weight: bold; color:white;}
 h1{font-family: MetaBold, Trebuchet MS, sans-serif;}
 a{color: darkgreen;  text-decoration: none;}
 a:hover{color: darkgreen; text-decoration: underline}

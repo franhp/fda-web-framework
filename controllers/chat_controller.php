@@ -6,17 +6,18 @@ $settings->bootstrap();
 $chat = new Chat();
 /**
  * Enviar un msg al echo server
- */ 
-if(isset($_POST['msg_sent'])) {
-
-    //$var = htmlspecialchars($_POST['msg_sent'], ENT_QUOTES);
-    // empezamos creando un array con todas las variables GET
+ */
+if (isset($_POST['msg_sent'])) {
 
     if (isset($_POST['to'])) {
+        $type = "chat";
+
+        if ($_POST['to'][0] == '#') {
+            $type = "groupchat";
+        }
+
         $url = 'http://projecte-xinxat.appspot.com/messages';
-        $xmlMessage = '<message to="' . $_POST['to'] . '" from="' . $_SESSION['username'] . '" type="chat">
-                            <body>' . htmlspecialchars($_POST['msg_sent'], ENT_QUOTES) . '</body>
-                        </message>';
+        $xmlMessage = '<message to="' . $_POST['to'] . '" from="' . $_SESSION['username'] . '" type="' . $type . '"><body>' . htmlspecialchars($_POST['msg_sent'], ENT_QUOTES) . '</body></message>';
 
         $fields = array(
             'msg' => $xmlMessage,
@@ -55,7 +56,7 @@ if(isset($_POST['msg_sent'])) {
 if (isset($_POST['msg_req'])) {
 
     if (isset($_POST['to'])) {
-        $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'] . "&token=" . $_SESSION['token']."&status=online&show=chat";
+        $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'] . "&token=" . $_SESSION['token'] . "&status=online";
 
         // abrimos la conexion
         $handler = curl_init();
@@ -67,26 +68,45 @@ if (isset($_POST['msg_req'])) {
         //echo $url;
         $resultado = curl_exec($handler);
         $xml = @simplexml_load_string($resultado);
+        curl_close($handler);
         if (trim($resultado) != "WRONG") {
             if (trim($resultado) == "NOEXISTS") {
                 echo "NOEXISTS";
             } else {
-                if ($xml->show == 'null' || $xml->show == 'chat' || $xml->show == 'dnd' || $xml->show == 'away')
-                    echo "NULL";
+                if ($xml->show == 'null' || $xml->show == 'chat' || $xml->show == 'dnd' || $xml->show == 'away'){
+                    $arr[] = array('state' => "NULL");
+                    header('Content-type: application/json');
+                    echo json_encode($arr);
+                }
                 else {
                     foreach ($xml as $message) {
                         $from = xml_attribute($message, 'from');
-                        echo "<p><b>&lt;" . $from . "&gt;</b> " . $message->body . "</p>";
+                        $to = xml_attribute($message, 'to');
+                        $type = xml_attribute($message, 'type');
+                        $msg = (string)$message->body;
+                        
+                        if ($from != $_SESSION['username']) {
+                           $arr[] = array('from' => $from, 'to' => $to, 'type' => $type ,'msg' => $msg); 
+                        }
+                        //echo "<p><b>&lt;" . $from . "&gt;</b> " . $message->body . "</p>";
+                    }
+                    if (!empty($arr)) {
+                        header('Content-type: application/json');
+                        echo json_encode($arr);
                     }
                 }
             }
         } else {
-            echo trim($resultado);
+            $arr[] = array('state' => "WRONG");
+            header('Content-type: application/json');
+            echo json_encode($arr);
         }
-        curl_close($handler);
     }
-    else
-        echo trim($resultado);
+    else {
+        $arr[] = array('state' => "WRONG");
+        header('Content-type: application/json');
+        echo json_encode($arr);
+   }
 }
 
 /**
@@ -95,11 +115,8 @@ if (isset($_POST['msg_req'])) {
 if (isset($_POST['command'])) {
 
     if (isset($_POST['line'])) {
-        $line = substr($_POST['line'], 0, strlen($_POST['line'])-1);
         $url = 'http://projecte-xinxat.appspot.com/messages';
-        $xmlMessage = '<message to="' . $_SESSION['username'] . '" from="' . $_SESSION['username'] . '" type="system">
-                            <body>/' . htmlspecialchars($line, ENT_QUOTES) . '</body>
-                        </message>';
+        $xmlMessage = '<message to="' . $_SESSION['username'] . '" from="' . $_SESSION['username'] . '" type="system"><body>' . htmlspecialchars($_POST['line'], ENT_QUOTES) . '</body></message>';
         $fields = array(
             'msg' => $xmlMessage,
             'token' => $_SESSION['token']
@@ -123,6 +140,7 @@ if (isset($_POST['command'])) {
     curl_setopt($handler, CURLOPT_HEADER, false);
 
     // ejecutamos curl
+    //var_dump($fields_string);
     $resultado = curl_exec($handler);
 
     // cerramos la conexion
@@ -200,10 +218,10 @@ if (isset($_POST['removeUserRoom'])) {
         echo "ERROR";
 }
 
-/***
+/* * *
  * Roster 
  */
-if (isset($_POST['roster'])){
+if (isset($_POST['roster'])) {
     $roster = htmlspecialchars($_POST['roster'], ENT_QUOTES);
     echo $chat->roster($roster);
 }
