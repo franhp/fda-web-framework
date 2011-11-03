@@ -253,12 +253,12 @@ class Chat {
         if (trim($result) != "") {
             foreach ($xml as $presence) {
                 $name = $this->xml_attribute($presence, 'from');
-                $users[] = array('name' => $name, 'status' => $presence->status);
+                $users[] = array('name' => $name, 'show' => (string)$presence->show, 'status' => (string)$presence->status,);
                 sort($users);
             }
             foreach ($users as $user){
                 
-                if ($user['status'] == "online") {
+                if ($user['show'] == "online") {
                     if ($user['name'] == $_SESSION['username'])
                         echo '<option value="'.$user['name'].'" style="color: green;" selected>' . $user['name'] . '</option>';
                     else

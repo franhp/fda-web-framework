@@ -56,7 +56,7 @@ if (isset($_POST['msg_sent'])) {
 if (isset($_POST['msg_req'])) {
 
     if (isset($_POST['to'])) {
-        $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'] . "&token=" . $_SESSION['token'] . "&status=online";
+        $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'] . "&token=" . $_SESSION['token'] . "&show=online&status=chating";
 
         // abrimos la conexion
         $handler = curl_init();
@@ -73,7 +73,7 @@ if (isset($_POST['msg_req'])) {
             if (trim($resultado) == "NOEXISTS") {
                 echo "NOEXISTS";
             } else {
-                if ($xml->show == 'null' || $xml->show == 'chat' || $xml->show == 'dnd' || $xml->show == 'away'){
+                if ($xml->show == 'null' || $xml->show == 'chat' || $xml->show == 'dnd' || $xml->show == 'away' || $xml->show == 'online'){
                     $arr[] = array('state' => "NULL");
                     header('Content-type: application/json');
                     echo json_encode($arr);
@@ -85,7 +85,7 @@ if (isset($_POST['msg_req'])) {
                         $type = xml_attribute($message, 'type');
                         $msg = (string)$message->body;
                         
-                        if ($from != $_SESSION['username']) {
+                        if ($from != $_SESSION['username'] || $type != "groupchat") {
                            $arr[] = array('from' => $from, 'to' => $to, 'type' => $type ,'msg' => $msg); 
                         }
                         //echo "<p><b>&lt;" . $from . "&gt;</b> " . $message->body . "</p>";
@@ -222,8 +222,8 @@ if (isset($_POST['removeUserRoom'])) {
  * Roster 
  */
 if (isset($_POST['roster'])) {
-    $roster = htmlspecialchars($_POST['roster'], ENT_QUOTES);
-    echo $chat->roster($roster);
+    $room = htmlspecialchars($_POST['room'], ENT_QUOTES);
+    echo $chat->roster($room);
 }
 
 /**

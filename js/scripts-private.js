@@ -5,7 +5,7 @@ $(document).ready(function() {
     $("button").click(function(){ 
         var btnId = $(this).attr("id");
         var user = $("#username").val();
-        var sala = $("#targetUser").val();
+        var sala = $("#target").val();
       
         switch(btnId)
         {
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 
     $("#messageTxt").bind(($.browser.opera ? "keypress" : "keydown"), function (e) {
         if(e.keyCode==13){
-            if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){   
+            if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#target").val() != "" && $("#target").val().length > 3){   
                 var text = $("#messageTxt").val();
                 if (text != ""){
                     if (text[0] == '/'){
@@ -61,6 +61,9 @@ $(document).ready(function() {
                             },
                             success: function(data) {
                                 $("#chatMonitor").append("<p style='color: red;'><b>SYSTEM</b> " +  data + "</p>" );
+                                $("#chatMonitor").prop({
+                                    scrollTop: $("#chatMonitor").prop("scrollHeight")
+                                });
                             }
                         })
                     } 
@@ -71,7 +74,7 @@ $(document).ready(function() {
                             url: '/web.xinxat.com/controllers/chat_controller.php' ,
                             data: {
                                 msg_sent: text,
-                                to: $("#targetUser").val()
+                                to: $("#target").val()
                             },
                             success: function(data) {
                                 if($.trim(data) !== "WRONG"){
@@ -92,12 +95,14 @@ $(document).ready(function() {
     });
     
     setInterval( "updateMonitor()", 5000 );
+    var sala = $("#target").val();
+    setInterval( "updateRoster('"+sala+"')", 30000 );
 });     
 
 var access = false;
 
 function updateMonitor(){
-    if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#targetUser").val() != "" && $("#targetUser").val().length > 3){    
+    if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#target").val() != "" && $("#target").val().length > 3){    
         $.ajax({
             type: 'POST',
             url: '/web.xinxat.com/controllers/chat_controller.php' ,   
@@ -196,6 +201,24 @@ function sentPrivate(user){
         })
     }
     
+}
+
+function updateRoster(sala){
+    if (sala != ""){
+        $.ajax({
+            type: 'POST',
+            url: '/web.xinxat.com/controllers/chat_controller.php' ,
+            data: {
+                roster: 'true',
+                room: ''+sala
+            },
+            success: function(data) {
+                if($.trim(data) !== ""){
+                    $("#chatRoster").html(''+data);
+                }
+            }	
+        })
+    }
 }
 
 jQuery.exists = function(selector) {
