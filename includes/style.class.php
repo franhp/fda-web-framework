@@ -119,7 +119,7 @@ class Style {
         );
 
         echo '<div id="header">
-                    <h1 class="logo">xinxat beta client</h1>
+                    <h1 class="logo">Xinxat Prototype Client</h1>
               </div>
                     <div id="menu">
                         <ul class="ulMenu">';

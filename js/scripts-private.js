@@ -13,10 +13,13 @@ $(document).ready(function() {
                 $('#messageTxt').val("/join " + sala);
                 break;
             case "leaveBtn":
-                $('#messageTxt').val("/leave " + sala);
+                $('#messageTxt').val("/leave");
                 break;
             case "listBtn":
                 $('#messageTxt').val("/list " + sala);
+                break;
+            case "inviteBtn":
+                $('#messageTxt').val("/invite " + user);
                 break;
             case "kickBtn":
                 $('#messageTxt').val("/kick " + user);
@@ -46,17 +49,20 @@ $(document).ready(function() {
     }) 
                 
     $("#messageTxt").bind(($.browser.opera ? "keypress" : "keydown"), function (e) {
+        
         if(e.keyCode==13){
             if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#target").val() != "" && $("#target").val().length > 3){   
                 var text = $("#messageTxt").val();
                 if (text != ""){
-                    if (text[0] == '/'){
+                    if (text.charAt(0) == '/'){
+                        var sala = $("#target").val();
                         $("#messageTxt").val("");  
                         $.ajax({
                             type: 'POST',
                             url: '/web.xinxat.com/controllers/chat_controller.php' ,
                             data: {
                                 command: 'true',
+                                room: sala,
                                 line: text
                             },
                             success: function(data) {
@@ -96,7 +102,7 @@ $(document).ready(function() {
     
     setInterval( "updateMonitor()", 5000 );
     var sala = $("#target").val();
-    setInterval( "updateRoster('"+sala+"')", 30000 );
+    setInterval( "updateRoster('"+sala+"')", 5000 );
 });     
 
 var access = false;
