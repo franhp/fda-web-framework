@@ -30,6 +30,9 @@ $(document).ready(function() {
             case "unbanBtn":
                 $('#messageTxt').val("/unban " + user);
                 break;
+            case "updateRosterBtn":
+                updateRoster(sala);
+                break;
             case "privateBtn":
                 if (!$.exists("#dialog-"+user)) { 
                     $('#privates').append('<div id="dialog-'+user+'" class="dialog" title="Dialog Title!">'
@@ -102,7 +105,7 @@ $(document).ready(function() {
     
     setInterval( "updateMonitor()", 5000 );
     var sala = $("#target").val();
-    setInterval( "updateRoster('"+sala+"')", 5000 );
+    setInterval( "updateRoster('"+sala+"')", 90000 );
 });     
 
 var access = false;

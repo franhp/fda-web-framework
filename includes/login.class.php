@@ -44,7 +44,7 @@ class Login extends Users {
                 $_SESSION['username'] = $user->username;
                 $_SESSION['lastlogin'] = date('Y-m-d H:i:s', time());
                 $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
-                $_SESSION['token'] = @md5($user->password . $_SESSION['lastlogin'] . $_SESSION['IP']);
+                $_SESSION['token'] = @md5((string)$user->password . date('d-m-Y') . (string)$user->username);
             }
             if ($remember) {
                 setcookie('remember', true, time() + 3600 * 24 * 15, '/', str_replace("http://", "", $settings->siteurl));
@@ -58,8 +58,8 @@ class Login extends Users {
                         password=\'' . $db->clean(md5($password . 'V1V4fDA')) . '\'');
             
             /* Actualizamos la bd del server*/
-            $chat = new Chat();
-            $chat->updateDB();
+            //$chat = new Chat();
+            //$chat->updateDB();
             
             return true;
         }

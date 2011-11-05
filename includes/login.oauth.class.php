@@ -7,8 +7,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require 'oauth/twitter/twitteroauth.php';
-        require 'oauth/config/twconfig.php';
+        require '../oauth/twitter/twitteroauth.php';
+        require '../oauth/config/twconfig.php';
 
         $twitteroauth = new TwitterOAuth(YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET);
         // Requesting authentication tokens, the parameter is the URL we will be redirected to
@@ -37,8 +37,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require 'oauth/facebook/facebook.php';
-        require 'oauth/config/fbconfig.php';
+        require '../oauth/facebook/facebook.php';
+        require '../oauth/config/fbconfig.php';
 
         $facebook = new Facebook(array(
                     'appId' => APP_ID,
@@ -73,10 +73,9 @@ class Oauth extends Login {
                     $_SESSION['oauth_provider'] = $userdata['oauth_provider'];
                     $_SESSION['userid'] = $userdata['id'];
                     $_SESSION['role'] = $userdata['role'];
-                    $_SESSION['username'] = $userdata['username'];
                     $_SESSION['lastlogin'] = date('Y-m-d H:i:s', time());
                     $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
-                    $_SESSION['token'] = @md5($userdata['password'] . $_SESSION['lastlogin'] . $_SESSION['IP']);
+                    $_SESSION['token'] = @md5($userdata['password'] . date('d-m-Y') . $userdata['username']);
 
                     $db = &$GLOBALS['db'];
 
@@ -86,8 +85,8 @@ class Oauth extends Login {
                         username=\'' . $_SESSION['username'] . '\'');
 
                     //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';   
-                    $chat = new Chat();
-                    $chat->updateDB();
+                    //$chat = new Chat();
+                    //$chat->updateDB();
                     
                     header("Location: " . $settings->siteurl . "/en/client");
                 }
@@ -110,8 +109,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require 'oauth/twitter/twitteroauth.php';
-        require 'oauth/config/twconfig.php';
+        require '../oauth/twitter/twitteroauth.php';
+        require '../oauth/config/twconfig.php';
 
         if (!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])) {
             // We've got everything we need
@@ -139,14 +138,13 @@ class Oauth extends Login {
 
                     $_SESSION['id'] = $userdata['id'];
                     $_SESSION['oauth_id'] = $uid;
-                    $_SESSION['username'] = $userdata['username'];
                     $_SESSION['oauth_provider'] = $userdata['oauth_provider'];
                     $_SESSION['userid'] = $userdata['id'];
                     $_SESSION['role'] = $userdata['role'];
                     $_SESSION['username'] = $userdata['username'];
                     $_SESSION['lastlogin'] = date('Y-m-d H:i:s', time());
                     $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
-                    $_SESSION['token'] = @md5($userdata['password'] . $_SESSION['lastlogin'] . $_SESSION['IP']);
+                    $_SESSION['token'] = @md5($userdata['password'] . date('d-m-Y') . $userdata['username']);
 
                     $db->query('UPDATE users
                         SET lastlogin = \'' . $_SESSION['lastlogin'] . '\', IP = \'' . $_SESSION['IP'] . '\'
@@ -154,8 +152,8 @@ class Oauth extends Login {
                         username=\'' . $_SESSION['username'] . '\'');
                     //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';
                     
-                    $chat = new Chat();
-                    $chat->updateDB();
+                    //$chat = new Chat();
+                    //$chat->updateDB();
             
                     header("Location: " . $settings->siteurl . "/web.xinxat.com/en/client");
                 } else {

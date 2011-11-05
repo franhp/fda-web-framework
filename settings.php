@@ -10,7 +10,7 @@ class Settings {
 	/**
 	 * Site URL
 	 */
-	var $siteurl = "http://localhost/web.xinxat.com";
+	var $siteurl = "http://xinxat.com/web.xinxat.com";
 	/**
 	 * Nombre del sitio
 	 */
@@ -28,10 +28,10 @@ class Settings {
     /**
      * Parametros de una base de datos MySQL
      */
-    var $dbhostname = "localhost";
-    var $dbusername = "root";
-    var $dbpassword = "";
-    var $dbase = "framework";
+    var $dbhostname = "mysql.xinxat.com";
+    var $dbusername = "xinxat";
+    var $dbpassword = "6RgOBj2p";
+    var $dbase = "xinxat_test";
     
     
     /**
@@ -73,6 +73,7 @@ class Settings {
 			require_once 'includes/blog.class.php';
                         require_once 'includes/login.oauth.class.php';
                         require_once 'includes/chat.class.php';
+                        require_once 'includes/test.class.php';
 	}
     
     /**

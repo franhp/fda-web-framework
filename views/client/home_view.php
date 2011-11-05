@@ -1,7 +1,6 @@
 <?php
 $settings = new Settings();
 $chat = new Chat();      
-
 echo '<h3>Welcome to client main page</h3> <p>Select a room:</p>';
 $rooms = $chat->listUserRooms($_SESSION['userid']);
 echo "<ul>";

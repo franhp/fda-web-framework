@@ -28,6 +28,10 @@ if ($section != 'client') {
         if ($settings->urlParameters(3) == 'user')
             include 'views/user_view.php';
     }
+    else if ($section == 'test') {
+        if ($settings->urlParameters(3) == 'test')
+            include 'views/test_view.php';
+    }
     else {
         include 'views/home_view.php';
     }

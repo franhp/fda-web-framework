@@ -4,74 +4,28 @@ include_once '../settings.php';
 $settings = new Settings();
 $settings->bootstrap();
 $chat = new Chat();
+$user = new Users();
 /**
  * Enviar un msg al echo server
  */
 if (isset($_POST['msg_sent'])) {
+    echo $chat->sendMessage( $_SESSION['username'], $_POST['to'], $_POST['msg_sent']);
+}
 
-    if (isset($_POST['to'])) {
-        $type = "chat";
-
-        // rooms empiezan por @
-        if ($_POST['to'][0] == '@') {
-            $type = "groupchat";
-        }
-
-        $to = $_POST['to'];
-        $from = $_SESSION['username'];
-        $url = 'http://projecte-xinxat.appspot.com/messages';
-        $xmlMessage = '<message to="' . $_POST['to'] . '" from="' . $from . '" type="' . $type . '"><body>' . htmlspecialchars($_POST['msg_sent'], ENT_QUOTES) . '</body></message>';
-
-        $fields = array(
-            'msg' => $xmlMessage,
-            'token' => $_SESSION['token']
-        );
-    }
-
-    // luego creamos nuestra string con los parametros separados con &
-    foreach ($fields as $key => $value) {
-        $fields_string .= $key . '=' . $value . '&';
-    }
-    rtrim($fields_string, '&');
-
-    // abrimos la conexion
-    $handler = curl_init();
-
-    //configuramos la url, el numero de parametros POST y los datos POST respectivos
-    curl_setopt($handler, CURLOPT_URL, $url);
-    curl_setopt($handler, CURLOPT_POST, count($fields));
-    curl_setopt($handler, CURLOPT_POSTFIELDS, $fields_string);
-    curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($handler, CURLOPT_HEADER, false);
-
-    // ejecutamos curl
-    $resultado = curl_exec($handler);
-
-    // cerramos la conexion
-    curl_close($handler);
-
-    echo $resultado;
+/**
+ * Enviar un comando al server
+ */
+if (isset($_POST['command'])) {
+    echo $chat->sendCommand($_POST['line'], $_POST['room']);
 }
 
 /**
  * Recibir msg del server
  */
 if (isset($_POST['msg_req'])) {
-
-    if (isset($_POST['to'])) {
-        $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $_POST['to'] . "&token=" . $_SESSION['token'] . "&show=online&status=chating";
-
-        // abrimos la conexion
-        $handler = curl_init();
-
-        //configuramos la url, el numero de parametros POST y los datos POST respectivos
-        curl_setopt($handler, CURLOPT_URL, $url);
-        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handler, CURLOPT_HEADER, false);
-        //echo $url;
-        $resultado = curl_exec($handler);
+    $resultado = $chat->getMessages($_POST['to']);
+    if (!empty($resultado)) {
         $xml = @simplexml_load_string($resultado);
-        curl_close($handler);
         if (trim($resultado) != "WRONG") {
             if (trim($resultado) == "NOEXISTS") {
                 echo "NOEXISTS";
@@ -86,11 +40,9 @@ if (isset($_POST['msg_req'])) {
                         $to = xml_attribute($message, 'to');
                         $type = xml_attribute($message, 'type');
                         $msg = (string) $message->body;
-
                         if ($from != $_SESSION['username'] || $type != "groupchat") {
                             $arr[] = array('from' => $from, 'to' => $to, 'type' => $type, 'msg' => $msg);
                         }
-                        //echo "<p><b>&lt;" . $from . "&gt;</b> " . $message->body . "</p>";
                     }
                     if (!empty($arr)) {
                         header('Content-type: application/json');
@@ -115,59 +67,14 @@ if (isset($_POST['msg_req'])) {
 }
 
 /**
- * Enviar un comando al server
- */
-if (isset($_POST['command'])) {
-    
-    if (isset($_POST['line'])) {
-        
-        if (strrpos($_POST['line'], "leave") || strrpos($_POST['line'], "ban") || strrpos($_POST['line'], "kick") || strrpos($_POST['line'], "invite") )
-            $to = $_POST['room'];
-        else
-            $to = $_SESSION['username'];
-
-        $url = 'http://projecte-xinxat.appspot.com/messages';
-        $xmlMessage = '<message to="' . $to . '" from="' . $_SESSION['username'] . '" type="system"><body>' . htmlspecialchars($_POST['line'], ENT_QUOTES) . '</body></message>';
-        $fields = array(
-            'msg' => $xmlMessage,
-            'token' => $_SESSION['token']
-        );
-        // luego creamos nuestra string con los parametros separados con &
-        foreach ($fields as $key => $value) {
-            $fields_string .= $key . '=' . $value . '&';
-        }
-        rtrim($fields_string, '&');
-
-        // abrimos la conexion
-        $handler = curl_init();
-
-        //configuramos la url, el numero de parametros POST y los datos POST respectivos
-        curl_setopt($handler, CURLOPT_URL, $url);
-        curl_setopt($handler, CURLOPT_POST, count($fields));
-        curl_setopt($handler, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handler, CURLOPT_HEADER, false);
-
-        // ejecutamos curl
-        //var_dump($fields_string);
-        $resultado = curl_exec($handler);
-
-        // cerramos la conexion
-        curl_close($handler);
-        //echo $xmlMessage." ";
-        echo $resultado;
-       
-        
-    }
-}
-
-/**
  * Lista de salas
  */
 if (isset($_POST['listRooms'])) {
     $rooms = $chat->listRooms();
-    if ($rooms)
+    if ($rooms) {
         echo $rooms;
+    }
+
     else
         echo "ERROR";
 }
@@ -176,8 +83,11 @@ if (isset($_POST['listRooms'])) {
  * Crear una sala
  */
 if (isset($_POST['createRoom'])) {
-    if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom']))
+    if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom'])) {
+        $chat->updateServerRooms();
         echo "OK";
+    }
+
     else
         echo "ERROR";
 }
@@ -188,13 +98,17 @@ if (isset($_POST['createRoom'])) {
 if (isset($_POST['updateRoom'])) {
 
     if (empty($_POST['roomid'])) {
-        if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom']))
+        if ($chat->createRoom($_POST['nameRoom'], $_POST['descriptionRoom'])) {
+            $chat->updateServerRooms();
             echo "OK";
+        }
         else
             echo "ERROR";
     } else {
-        if ($chat->updateRoom($_POST['roomid'], $_POST['nameRoom'], $_POST['descriptionRoom']))
+        if ($chat->updateRoom($_POST['roomid'], $_POST['nameRoom'], $_POST['descriptionRoom'])) {
+            $chat->updateServerRooms();
             echo "OK";
+        }
         else
             echo "ERROR";
     }
@@ -204,8 +118,10 @@ if (isset($_POST['updateRoom'])) {
  * Borra una sala
  */
 if (isset($_POST['deleteRoom'])) {
-    if ($chat->deleteRoom($_POST['deleteRoom']))
+    if ($chat->deleteRoom($_POST['deleteRoom'])) {
+        $chat->updateServerRooms();
         echo "OK";
+    }
     else
         echo "ERROR";
 }
@@ -214,8 +130,11 @@ if (isset($_POST['deleteRoom'])) {
  * Inserta un usuario en una sala
  */
 if (isset($_POST['insertUserRoom'])) {
-    if ($chat->insertUserRoom($_POST['roomid'], $_POST['userid']))
+    if ($chat->insertUserRoom($_POST['roomid'], $_POST['userid'])) {
+        $chat->updateServerRooms();
         echo "OK";
+    }
+
     else
         echo "ERROR";
 }
@@ -224,8 +143,11 @@ if (isset($_POST['insertUserRoom'])) {
  * Borra un usuario de una sala
  */
 if (isset($_POST['removeUserRoom'])) {
-    if ($chat->removeUserRoom($_POST['roomid'], $_POST['userid']))
+    if ($chat->removeUserRoom($_POST['roomid'], $_POST['userid'])) {
+        $chat->updateServerRooms();
         echo "OK";
+    }
+
     else
         echo "ERROR";
 }

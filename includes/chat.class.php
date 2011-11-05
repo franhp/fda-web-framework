@@ -221,6 +221,23 @@ class Chat {
     /**
      * Actualiza la bd del server
      */
+    public function updateServerRooms() {
+        $url = 'http://projecte-xinxat.appspot.com/updateRooms';
+
+        // abrimos la conexion
+        $handler = curl_init();
+
+        curl_setopt($handler, CURLOPT_URL, $url);
+        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handler, CURLOPT_HEADER, false);
+
+        curl_exec($handler);
+        curl_close($handler);
+    }
+
+    /**
+     * Actualiza la bd del server
+     */
     public function updateDB() {
         $url = 'http://projecte-xinxat.appspot.com/updateDB';
 
@@ -239,7 +256,7 @@ class Chat {
      * Lista los usuarios del roster / o un canal
      */
 
-    function roster($room="") {
+    public function roster($room="") {
         $url = 'http://projecte-xinxat.appspot.com/roster?room=' . $room;
         // abrimos la conexion
         $handler = curl_init();
@@ -251,25 +268,169 @@ class Chat {
         curl_close($handler);
         echo '<select style="width: 100%; height: 277px;" id="username" multiple="multiple" size="1">';
         if (trim($result) != "") {
-            foreach ($xml as $presence) {
-                $name = $this->xml_attribute($presence, 'from');
-                $users[] = array('name' => $name, 'show' => (string)$presence->show, 'status' => (string)$presence->status,);
-                sort($users);
+            if ($xml) {
+                foreach ($xml as $presence) {
+                    $name = $this->xml_attribute($presence, 'from');
+                    $users[] = array('name' => $name, 'show' => (string) $presence->show, 'status' => (string) $presence->status,);
+                    sort($users);
+                }
             }
-            foreach ($users as $user){
-                
+            foreach ($users as $user) {
                 if ($user['show'] == "online") {
                     if ($user['name'] == $_SESSION['username'])
-                        echo '<option value="'.$user['name'].'" style="color: green;" selected>' . $user['name'] . '</option>';
+                        echo '<option value="' . $user['name'] . '" style="color: green;" selected>' . $user['name'] . '</option>';
                     else
-                        echo '<option value="'.$user['name'].'" style="color: green;">' . $user['name'] . '</option>';
+                        echo '<option value="' . $user['name'] . '" style="color: green;">' . $user['name'] . '</option>';
                 }
 
                 else
-                    echo '<option value="'.$user['name'].'" style="color: grey;">' . $user['name'] . '</option>';
+                    echo '<option value="' . $user['name'] . '" style="color: grey;">' . $user['name'] . '</option>';
             }
         }
         echo '</select>';
+    }
+
+    /*
+     * Enviar msg al server
+     */
+
+    public function sendMessage($from, $target, $message) {
+
+        $resultado = null;
+
+        if (isset($target)) {
+            $type = "chat";
+
+            // rooms empiezan por @
+            if ($target[0] == '@') {
+                $type = "groupchat";
+            }
+
+            $url = 'http://projecte-xinxat.appspot.com/messages';
+            $xmlMessage = '<message to="' . $target . '" from="' . $from . '" type="' . $type . '"><body>' . htmlspecialchars($message, ENT_QUOTES) . '</body></message>';
+
+            $fields = array(
+                'msg' => $xmlMessage,
+                'token' => $_SESSION['token']
+            );
+
+            // luego creamos nuestra string con los parametros separados con &
+            foreach ($fields as $key => $value) {
+                $fields_string .= $key . '=' . $value . '&';
+            }
+            rtrim($fields_string, '&');
+
+            // abrimos la conexion
+            $handler = curl_init();
+
+            //configuramos la url, el numero de parametros POST y los datos POST respectivos
+            curl_setopt($handler, CURLOPT_URL, $url);
+            curl_setopt($handler, CURLOPT_POST, count($fields));
+            curl_setopt($handler, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handler, CURLOPT_HEADER, false);
+
+            // ejecutamos curl
+            $resultado = curl_exec($handler);
+
+            // cerramos la conexion
+            curl_close($handler);
+        }
+
+        return $resultado;
+    }
+
+    /*
+     * Enviar comando al server
+     */
+
+    public function sendCommand($command, $target) {
+
+        $resultado = null;
+
+        if (isset($command)) {
+
+            $user = new Users();
+
+            if (strrpos($command, "leave")) {
+                $userid = $user->getUserId($_SESSION['username']);
+                $roomid = $this->getRoomId($target);
+                if ($this->getAccess($roomid, $userid)) {
+                    return('You cant leave this room');
+                }
+            }
+            if (strrpos($command, "leave") || strrpos($command, "ban") || strrpos($command, "kick") || strrpos($command, "invite"))
+                $to = $target;
+            else
+                $to = $_SESSION['username'];
+
+            $url = 'http://projecte-xinxat.appspot.com/messages';
+            $xmlMessage = '<message to="' . $to . '" from="' . $_SESSION['username'] . '" type="system"><body>' . htmlspecialchars($command, ENT_QUOTES) . '</body></message>';
+            $fields = array(
+                'msg' => $xmlMessage,
+                'token' => $_SESSION['token']
+            );
+            // luego creamos nuestra string con los parametros separados con &
+            foreach ($fields as $key => $value) {
+                $fields_string .= $key . '=' . $value . '&';
+            }
+            rtrim($fields_string, '&');
+
+            // abrimos la conexion
+            $handler = curl_init();
+
+            //configuramos la url, el numero de parametros POST y los datos POST respectivos
+            curl_setopt($handler, CURLOPT_URL, $url);
+            curl_setopt($handler, CURLOPT_POST, count($fields));
+            curl_setopt($handler, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handler, CURLOPT_HEADER, false);
+
+            // ejecutamos curl
+            //var_dump($fields_string);
+            $resultado = curl_exec($handler);
+
+            // cerramos la conexion
+            curl_close($handler);
+            //echo $xmlMessage." ";
+        }
+
+        return $resultado;
+    }
+
+    /*
+     * Leer la pila del usuario en el server
+     */
+
+    public function getMessages($target) {
+
+        $resultado = null;
+
+        if (isset($target)) {
+
+            if (!isset($_SESSION['online'])) {
+                $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $target . "&token=" . $_SESSION['token'] . "&show=online&status=chating";
+                $_SESSION['online'] = true;
+            } else {
+                $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $target . "&token=" . $_SESSION['token'];
+                if (date('s') > 40)
+                    $url.= "&show=online&status=chating";
+            }
+
+            // abrimos la conexion
+            $handler = curl_init();
+
+            //configuramos la url, el numero de parametros POST y los datos POST respectivos
+            curl_setopt($handler, CURLOPT_URL, $url);
+            curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handler, CURLOPT_HEADER, false);
+            //echo $url;
+            $resultado = curl_exec($handler);
+
+            curl_close($handler);
+        }
+
+        return $resultado;
     }
 
     /**
