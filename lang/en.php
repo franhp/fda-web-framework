@@ -1,6 +1,6 @@
 <?php
-define("WELCOME_TEST", "Welcome to FilaDeAtras Web Framework");
-define("FOOTER_TEST", "See you!");
+define("WELCOME_TEST", "");
+define("FOOTER_TEST", "Footer content See you!");
 
 /* Login */
 define("LOGIN","Log in");
@@ -19,6 +19,7 @@ define("PREVIOUS","Previous");
 define("NEWCOMMENT","New Comment");
 define("ADDCOMMENT","Add Comment");
 define("NOCOMMENTS","No comments");
+define("NOPOSTS","No posts");
 
 /* Common */
 define("ERROR","An error has occurred");
