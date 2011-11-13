@@ -1,7 +1,7 @@
 <?php
 $settings = new Settings();
 $user = new Login();
-$username = $settings->urlParameters(3);
+$username = $settings->urlParameters(2);
 $userInfo = $user->getUserInfo($_SESSION['userid']);
 if (is_string($username)) {
     if ($user->isLogged()) {

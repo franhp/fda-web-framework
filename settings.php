@@ -10,7 +10,7 @@ class Settings {
 	/**
 	 * Site URL
 	 */
-	var $siteurl = "http://xinxat.com/web.xinxat.com";
+	var $siteurl = "http://localhost";
 	/**
 	 * Nombre del sitio
 	 */
@@ -28,10 +28,10 @@ class Settings {
     /**
      * Parametros de una base de datos MySQL
      */
-    var $dbhostname = "mysql.xinxat.com";
-    var $dbusername = "xinxat";
-    var $dbpassword = "6RgOBj2p";
-    var $dbase = "xinxat_test";
+    var $dbhostname = "";
+    var $dbusername = "";
+    var $dbpassword = "";
+    var $dbase = "";
     
     
     /**
@@ -54,14 +54,14 @@ class Settings {
 			require_once 'includes/login.class.php';
 			require_once 'includes/style.class.php';
 			
-			if($this->urlParameters(2)!="controllers") { //Discard all requests to controllers
+			if($this->urlParameters(1)!="controllers") { //Discard all requests to controllers
 				$lang_dir = scandir("lang/"); //Find all languages in lang dir
 				$langs = array_slice($lang_dir, 2);
 				foreach ($langs as $lang) {
 					$languages[] = str_replace(".php", "", $lang);
 				}
-				if(in_array($this->urlParameters(2), $languages)) // If it exists, set it
-					$_SESSION['lang'] = $this->urlParameters(2);
+				if(in_array($this->urlParameters(1), $languages)) // If it exists, set it
+					$_SESSION['lang'] = $this->urlParameters(1);
 				else {
 					$_SESSION['lang'] = $this->default_lang; // Else redirect to the default
 					header("Location: ".$this->siteurl."/".$this->default_lang);

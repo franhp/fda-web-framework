@@ -58,8 +58,9 @@ class Login extends Users {
                         password=\'' . $db->clean(md5($password . 'V1V4fDA')) . '\'');
             
             /* Actualizamos la bd del server*/
-            //$chat = new Chat();
-            //$chat->updateDB();
+            $chat = new Chat();
+            $chat->updateDB();
+			$chat->updateServerRooms();
             
             return true;
         }

@@ -23,7 +23,7 @@ if (isset($_POST['command'])) {
  * Recibir msg del server
  */
 if (isset($_POST['msg_req'])) {
-    $resultado = $chat->getMessages($_POST['to']);
+    $resultado = $chat->getMessages($_POST['to'], $_POST['msg_req']);
     if (!empty($resultado)) {
         $xml = @simplexml_load_string($resultado);
         if (trim($resultado) != "WRONG") {

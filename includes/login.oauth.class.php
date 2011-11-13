@@ -7,8 +7,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require '../oauth/twitter/twitteroauth.php';
-        require '../oauth/config/twconfig.php';
+        require './external/oauth/twitter/twitteroauth.php';
+        require './external/oauth/config/twconfig.php';
 
         $twitteroauth = new TwitterOAuth(YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET);
         // Requesting authentication tokens, the parameter is the URL we will be redirected to
@@ -37,8 +37,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require '../oauth/facebook/facebook.php';
-        require '../oauth/config/fbconfig.php';
+        require './external/oauth/facebook/facebook.php';
+        require './external/oauth/config/fbconfig.php';
 
         $facebook = new Facebook(array(
                     'appId' => APP_ID,
@@ -85,8 +85,9 @@ class Oauth extends Login {
                         username=\'' . $_SESSION['username'] . '\'');
 
                     //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="1;url='. $settings->siteurl . '"/en/client">';   
-                    //$chat = new Chat();
-                    //$chat->updateDB();
+                    $chat = new Chat();
+                    $chat->updateDB();
+					$chat->updateServerRooms();
                     
                     header("Location: " . $settings->siteurl . "/en/client");
                 }
@@ -109,8 +110,8 @@ class Oauth extends Login {
         $settings = new Settings();
         $db = &$GLOBALS['db'];
 
-        require '../oauth/twitter/twitteroauth.php';
-        require '../oauth/config/twconfig.php';
+        require './external/oauth/twitter/twitteroauth.php';
+        require './external/oauth/config/twconfig.php';
 
         if (!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])) {
             // We've got everything we need
@@ -152,8 +153,9 @@ class Oauth extends Login {
                         username=\'' . $_SESSION['username'] . '\'');
                     //echo '<h3>Bienvenido</h3><meta http-equiv="refresh" content="2;url='. $settings->siteurl . '"/en/client">';
                     
-                    //$chat = new Chat();
-                    //$chat->updateDB();
+                    $chat = new Chat();
+                    $chat->updateDB();
+					$chat->updateServerRooms();
             
                     header("Location: " . $settings->siteurl . "/web.xinxat.com/en/client");
                 } else {

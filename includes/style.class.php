@@ -26,14 +26,14 @@ class Style {
 
         //array con el menu
         $menu = array(
-            array('section' => '', 'title' => 'Home', 'url' => $settings->siteurl, 'show' => 'always'),
-            array('section' => 'blog', 'title' => 'Blog', 'url' => $settings->siteurl.'/en/blog', 'show' => 'always'),
-            array('section' => 'register', 'title' => 'Register', 'url' => $settings->siteurl.'/en/register', 'show' => 'nologged'),
-            array('section' => 'user', 'title' => 'User', 'url' => $settings->siteurl.'/en/user', 'show' => 'logged'),
-            array('section' => 'client', 'title' => 'Client', 'url' => $settings->siteurl.'/en/client', 'show' => 'logged'),
-            array('section' => 'admin', 'title' => 'Admin', 'url' => $settings->siteurl.'/en/admin/client', 'show' => 'logged'),
-            array('section' => 'login', 'title' => 'Login', 'url' => $settings->siteurl.'/en/login', 'show' => 'nologged'),
-            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/en/login', 'show' => 'logged')
+            array('section' => 'home', 'title' => 'Home', 'url' => '/', 'show' => 'always'),
+            array('section' => 'blog', 'title' => 'Blog', 'url' => '/en/blog', 'show' => 'always'),
+            array('section' => 'register', 'title' => 'Register', 'url' => '/en/register', 'show' => 'nologged'),
+            array('section' => 'user', 'title' => 'User', 'url' => '/en/user', 'show' => 'logged'),
+            array('section' => 'client', 'title' => 'Client', 'url' => '/en/client', 'show' => 'logged'),
+            array('section' => 'admin', 'title' => 'Admin', 'url' => '/en/admin/client', 'show' => 'logged'),
+            array('section' => 'login', 'title' => 'Login', 'url' => '/en/login', 'show' => 'nologged'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => '/en/login', 'show' => 'logged')
         );
 
         echo '<div id="header">
@@ -42,7 +42,7 @@ class Style {
                     <div id="menu">
                         <ul class="ulMenu">';
 
-        $section = $settings->urlParameters(3);
+        $section = $settings->urlParameters(2);
 
         foreach ($menu as $seccion) {
 
@@ -88,7 +88,7 @@ class Style {
             <script src="' . $settings->siteurl . '/js/jquery.scrollTo.js" type="text/javascript"></script>
             <script type="text/javascript" src="' . $settings->siteurl . '/external/ckeditor/ckeditor.js"></script>
             <script type="text/javascript" src="' . $settings->siteurl . '/external/ckeditor/adapters/jquery.js"></script>
-            <!--<script type="text/javascript" src="' . $settings->siteurl . '/js/scripts-private.js"></script>-->
+            <script type="text/javascript" src="' . $settings->siteurl . '/js/scripts-private.js"></script>
             <style>
 		#chatWrapper{width: 771px; height: 300px; text-align: left; font-family: courier; }
 		#chatDiv{float: left; width: 518px; height: 272px; text-align: left;}
@@ -111,11 +111,11 @@ class Style {
 
         //array con el menu
         $menu = array(
-            array('section' => '', 'title' => 'Home', 'url' => $settings->siteurl),
-            array('section' => 'user', 'title' => 'User', 'url' => $settings->siteurl.'/en/user'),
-            array('section' => 'client', 'title' => 'Client', 'url' => $settings->siteurl.'/en/client'),
-            array('section' => 'admin', 'title' => 'Admin', 'url' => $settings->siteurl.'/en/admin/client'),
-            array('section' => 'login', 'title' => 'Logout', 'url' => $settings->siteurl.'/en/login')
+            array('section' => 'home', 'title' => 'Home', 'url' => '/'),
+            array('section' => 'user', 'title' => 'User', 'url' => '/en/user'),
+            array('section' => 'client', 'title' => 'Client', 'url' => '/en/client'),
+            array('section' => 'admin', 'title' => 'Admin', 'url' => '/en/admin/client'),
+            array('section' => 'login', 'title' => 'Logout', 'url' => '/en/login')
         );
 
         echo '<div id="header">
@@ -124,7 +124,7 @@ class Style {
                     <div id="menu">
                         <ul class="ulMenu">';
 
-        $section = $settings->urlParameters(3);
+        $section = $settings->urlParameters(2);
 
         foreach ($menu as $seccion) {
 

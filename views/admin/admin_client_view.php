@@ -2,7 +2,7 @@
 $user = new Login();
 $chat = new Chat();
 $settings = new Settings();
-$options = $settings->urlParameters(5);
+$options = $settings->urlParameters(4);
 
 if ($user->isLogged() && $user->getUserRole() > 1) {
     ?>

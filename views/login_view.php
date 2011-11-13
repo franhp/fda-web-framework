@@ -1,7 +1,7 @@
 <?php
 
 $settings = new Settings();
-$options = $settings->urlParameters(4);
+$options = $settings->urlParameters(3);
 if (!empty($options)) {
 
     $user = new Oauth();

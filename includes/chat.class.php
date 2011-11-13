@@ -370,6 +370,7 @@ class Chat {
                 'msg' => $xmlMessage,
                 'token' => $_SESSION['token']
             );
+
             // luego creamos nuestra string con los parametros separados con &
             foreach ($fields as $key => $value) {
                 $fields_string .= $key . '=' . $value . '&';
@@ -387,12 +388,11 @@ class Chat {
             curl_setopt($handler, CURLOPT_HEADER, false);
 
             // ejecutamos curl
-            //var_dump($fields_string);
             $resultado = curl_exec($handler);
 
             // cerramos la conexion
+
             curl_close($handler);
-            //echo $xmlMessage." ";
         }
 
         return $resultado;
@@ -402,20 +402,18 @@ class Chat {
      * Leer la pila del usuario en el server
      */
 
-    public function getMessages($target) {
+    public function getMessages($target, $presence) {
 
         $resultado = null;
 
         if (isset($target)) {
 
-            if (!isset($_SESSION['online'])) {
+            if ($presence == "presence") {
                 $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $target . "&token=" . $_SESSION['token'] . "&show=online&status=chating";
-                $_SESSION['online'] = true;
-            } else {
-                $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $target . "&token=" . $_SESSION['token'];
-                if (date('s') > 40)
-                    $url.= "&show=online&status=chating";
             }
+
+            else
+                $url = 'http://projecte-xinxat.appspot.com/messages?to=' . $target . "&token=" . $_SESSION['token'];
 
             // abrimos la conexion
             $handler = curl_init();

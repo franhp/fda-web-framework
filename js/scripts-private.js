@@ -1,6 +1,8 @@
 $(document).ready(function() {
     
+    sendPresence();
     updateMonitor();
+    updateRoster($("#target").val());
     
     $("button").click(function(){ 
         var btnId = $(this).attr("id");
@@ -62,7 +64,7 @@ $(document).ready(function() {
                         $("#messageTxt").val("");  
                         $.ajax({
                             type: 'POST',
-                            url: '/web.xinxat.com/controllers/chat_controller.php' ,
+                            url: '/controllers/chat_controller.php' ,
                             data: {
                                 command: 'true',
                                 room: sala,
@@ -80,7 +82,7 @@ $(document).ready(function() {
                         $("#messageTxt").val("");
                         $.ajax({
                             type: 'POST',
-                            url: '/web.xinxat.com/controllers/chat_controller.php' ,
+                            url: '/controllers/chat_controller.php' ,
                             data: {
                                 msg_sent: text,
                                 to: $("#target").val()
@@ -102,9 +104,9 @@ $(document).ready(function() {
             }
         }
     });
-    
-    setInterval( "updateMonitor()", 5000 );
     var sala = $("#target").val();
+    setInterval( "updateMonitor()", 5000 );
+    setInterval( "sendPresence()", 80000 );
     setInterval( "updateRoster('"+sala+"')", 90000 );
 });     
 
@@ -114,10 +116,85 @@ function updateMonitor(){
     if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#target").val() != "" && $("#target").val().length > 3){    
         $.ajax({
             type: 'POST',
-            url: '/web.xinxat.com/controllers/chat_controller.php' ,   
+            url: '/controllers/chat_controller.php' ,   
             dataType: "json",
             data: {
                 msg_req: "",
+                to: $("#sourceUser").val()
+            },
+            success: function(data) {
+                if (access == false ){
+                    if(data[0].state != "WRONG"){
+                        $("#loading").fadeOut(500);
+                        $('#messageTxt').prop('disabled', false);
+                        $("#chatMonitor").append("<p style='color: green; font-weight: bold;'>Welcome to Xinxat!</p>");
+                        if(data[0].state != "NULL"){
+                            $.each(data, function(index) {
+                                var from = data[index].from;
+                                var type = data[index].type;
+                                var msg = data[index].msg;
+                                if(type == "chat") {
+                                    if (!$.exists("#dialog-"+from)) { 
+                                        $('#privates').append('<div id="dialog-'+from+'" class="dialog" title="Dialog Title!">'
+                                            +'<div id="privateMonitor-'+from+'" style="height: 150px; width: 100%; overflow-x: hidden; overflow-y: auto; text-align:left; font-family: courier;">'
+                                            +'</div><input id="privateMessageTxt-'+from+'" style="bottom: 0; width: 100%;" type="text"/>'
+                                            +'</div><script type="text/javascript">$("#dialog-'+from+'").dialog('
+                                            +'{title: \''+from+'\',close: function(event, ui){$(this).dialog(\'destroy\').remove();}}); $(\'input\').keydown(function(event) {if (event.keyCode == \'13\') { if ($(this).attr("id") != "messageTxt") sentPrivate("'+from+'");}});</script>');
+                                        $('#privateMonitor-'+from).append('<p><b>&lt;' + from + '&gt;</b> ' + msg + '</p>');
+                                    } else {
+                                        $('#privateMonitor-'+from).append('<p><b>&lt;' + from + '&gt;</b> ' + msg + '</p>');
+                                    }
+
+                                } else if (type == "groupchat") {
+                                    $("#chatMonitor").append("<p><b>&lt;" + from + "&gt;</b> " + msg + "</p>");
+                                    $("#chatMonitor").prop({
+                                        scrollTop: $("#chatMonitor").prop("scrollHeight")
+                                    });
+                                }
+                            });
+                        }
+                        access = true;
+                    }
+                } else {
+                    if($.trim(data) !== "NULL"){
+                        $.each(data, function(index) {
+                            var from = data[index].from;
+                            var type = data[index].type;
+                            var msg = data[index].msg;
+                            if(type == "chat") {
+                                if (!$.exists("#dialog-"+from)) { 
+                                    $('#privates').append('<div id="dialog-'+from+'" class="dialog" title="Dialog Title!">'
+                                        +'<div id="privateMonitor-'+from+'" style="height: 150px; width: 100%; overflow-x: hidden; overflow-y: auto; text-align:left; font-family: courier;">'
+                                        +'</div><input id="privateMessageTxt-'+from+'" style="bottom: 0; width: 100%;" type="text"/>'
+                                        +'</div><script type="text/javascript">$("#dialog-'+from+'").dialog('
+                                        +'{title: \''+from+'\',close: function(event, ui){$(this).dialog(\'destroy\').remove();}}); $(\'input\').keydown(function(event) {if (event.keyCode == \'13\') { if ($(this).attr("id") != "messageTxt") sentPrivate("'+from+'");}});</script>');
+                                    $('#privateMonitor-'+from).append('<p><b>&lt;' + from + '&gt;</b> ' + msg + '</p>');
+                                } else {
+                                    $('#privateMonitor-'+from).append('<p><b>&lt;' + from + '&gt;</b> ' + msg + '</p>');
+                                }
+                                
+                            } else if (type == "groupchat") {
+                                $("#chatMonitor").append("<p><b>&lt;" + from + "&gt;</b> " + msg + "</p>");
+                                $("#chatMonitor").prop({
+                                    scrollTop: $("#chatMonitor").prop("scrollHeight")
+                                });
+                            }
+                        });
+                    }
+                }
+            }	
+        })
+    }
+}
+
+function sendPresence(){
+    if($("#sourceUser").val() != "" && $("#sourceUser").val().length > 3 && $("#target").val() != "" && $("#target").val().length > 3){    
+        $.ajax({
+            type: 'POST',
+            url: '/controllers/chat_controller.php' ,   
+            dataType: "json",
+            data: {
+                msg_req: "presence",
                 to: $("#sourceUser").val()
             },
             success: function(data) {
@@ -191,7 +268,7 @@ function sentPrivate(user){
         $("#privateMessageTxt-"+user).val("");
         $.ajax({
             type: 'POST',
-            url: '/web.xinxat.com/controllers/chat_controller.php' ,
+            url: '/controllers/chat_controller.php' ,
             data: {
                 msg_sent: text,
                 to: user
@@ -216,7 +293,7 @@ function updateRoster(sala){
     if (sala != ""){
         $.ajax({
             type: 'POST',
-            url: '/web.xinxat.com/controllers/chat_controller.php' ,
+            url: '/controllers/chat_controller.php' ,
             data: {
                 roster: 'true',
                 room: ''+sala
