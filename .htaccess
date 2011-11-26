@@ -2,4 +2,4 @@
 RewriteEngine On 
 RewriteCond %{REQUEST_FILENAME} !-f 
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /web.xinxat.com/index.php [L]
+RewriteRule . /index.php [L]

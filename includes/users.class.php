@@ -102,8 +102,21 @@ class Users {
         $db->debug('result');
     }
 
-    public function delUser($idUser) {
+    public function deleteUser($idUser) {
+
+        $db = &$GLOBALS['db'];
         
+        if (is_numeric($idUser)) {
+            $db->query("delete from users where id = $id");
+
+            if (!$this->getUserInfo($id)) {
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
     }
 
     /**

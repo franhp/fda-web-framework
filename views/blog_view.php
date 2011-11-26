@@ -2,20 +2,20 @@
 $blog = new Blog();
 $settings = new Settings();
 
-$options = $settings->urlParameters(4);
+$options = $settings->urlParameters(3);
 if(!empty($options)){
 	/* Tags & Categories */
-	if($options == "tags") $posts = $blog->getPostsByTag($settings->urlParameters(5));
-	else if($options == "categories") $posts = $blog->getPostsByCategory($settings->urlParameters(5));
+	if($options == "tags") $posts = $blog->getPostsByTag($settings->urlParameters(4));
+	else if($options == "categories") $posts = $blog->getPostsByCategory($settings->urlParameters(4));
 	/* If "all" is set, show all posts */
 	else if($options == "all") $posts = $blog->getAllPosts();
 	/* If a range is set in the url, display that range of posts */
 	else if ($options == "from") {
-		$posts = $blog->getPosts($settings->urlParameters(5), $settings->urlParameters(7));
+		$posts = $blog->getPosts($settings->urlParameters(4), $settings->urlParameters(6));
 		nextPreviousButtons();
 	}
 	/* If the SEO url of a post is specified, show the post */
-	else if($options == "post") $posts[] = $blog->getPostBySeoUrl($settings->urlParameters(5));
+	else if($options == "post") $posts[] = $blog->getPostBySeoUrl($settings->urlParameters(4));
 }
 /* By default show first 5 posts */
 else {
@@ -30,7 +30,7 @@ if($posts){
 			/* The post */
 			echo '<div class="post" id="postID'.$post->post->id.'">';
 			
-			echo '<h3><a href="'.$settings->siteurl.'/'.$settings->urlParameters(2).'/blog/post/
+			echo '<h3><a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/post/
 					'.$post->post->seourl.'">
 					'.$post->post->title.'</a></h3>';
 			echo '<small>'.WRITTENBY.' '.$post->post->username.' '.ON.' '.$post->post->date.'</small>';
@@ -51,7 +51,7 @@ if($posts){
 			if($categoriesCount>0){
 				echo '<p>Categories: ';
 				foreach($post->post->categories as $categories){
-					echo '<a href="'.$settings->siteurl.'/'.$settings->urlParameters(2).'/blog/categories/'.$categories->category_name.'">'.$categories->category_name.'</a> ';
+					echo '<a href="'.$settings->siteurl.'/'.$settings->urlParameters(1).'/blog/categories/'.$categories->category_name.'">'.$categories->category_name.'</a> ';
 				}
 				echo '<p>';
 			}
@@ -168,9 +168,9 @@ function nextPreviousButtons(){
 	$blog = new Blog();
 	$totalPosts = $blog->getTotalPosts();
 	$settings = new Settings();
-	$param1 = $settings->urlParameters(5);
-	$param2 = $settings->urlParameters(7);
-	$lang = $settings->urlParameters(2);
+	$param1 = $settings->urlParameters(4);
+	$param2 = $settings->urlParameters(6);
+	$lang = $settings->urlParameters(1);
 	
 	if($totalPosts>5){	
 		if(empty($param1)||($param1 > 0 && $param1 < 4)){
