@@ -43,7 +43,7 @@ class Blog{
 			else return $posts;
 		}
 	}
-	
+	/*
 	public function getPostsByTag($tag){
 		$db = &$GLOBALS['db'];
 		$db->query('select p.id from posts p, posts_tags, tags
@@ -60,16 +60,16 @@ class Blog{
 		if(empty($posts)) return false;
 		else return $posts;
 	}
-	
+	 */
 	public function getPostsByCategory($category){
 		$db = &$GLOBALS['db'];
 		$db->query('select p.id from posts p, posts_categories, categories
 					where 
-					p.id=posts_categories.id_post
+					p.id=posts_categories.postid
 					and
-					posts_categories.id_tag=categories.id
+					posts_categories.categoryid=categories.id
 					and
-					categories.tag_name=\''.$db->clean($category).'\'');
+					categories.category_name=\''.$db->clean($category).'\'');
 		$result = $db->obj();
 		foreach($result as $post){
 			$posts[] = $this->getPostById($post->id);
@@ -97,7 +97,7 @@ class Blog{
 			$post->post = $item;
 			$post->post->comments = $this->getPostComments($idPost);
 			$post->post->categories = $this->getPostCategories($idPost);
-			$post->post->tags = $this->getPostTags($idPost);
+			//$post->post->tags = $this->getPostTags($idPost);
 		}
 		return $post;
 	}
@@ -147,16 +147,21 @@ class Blog{
 
 	}
 	
+	/**
+	 *Returns the categories from an specified post
+	 *@return stdClass
+	 */
 	public function getPostCategories($idPost){
 		$db = &$GLOBALS['db'];
 		$db->query('select c.category_name from categories c, posts_categories
-					where c.id=posts_categories.id_category
+					where c.id=posts_categories.categoryid
 					and
-					posts_categories.id_post='.$idPost);
+					posts_categories.postid='.$idPost);
 		return $db->obj();
 	}
 	
-	public function getPostTags($idPost){
+	/* (Tags are out of this release)
+	 public function getPostTags($idPost){
 		$db = &$GLOBALS['db'];
 		$db->query('select t.tag_name from tags t, posts_tags
 					where t.id=posts_tags.id_tag
@@ -164,14 +169,30 @@ class Blog{
 					posts_tags.id_post='.$idPost);
 		return $db->obj();
 	}
-	
+	*/
 
+	/**
+	 * Returns an array of all the categories
+	 * @return array
+	 */
 	public function getCategories(){
-		
+		$db = &$GLOBALS['db'];
+		$db->query('select category_name from categories');
+		$result = $db->obj();
+		foreach ($result as $category){
+			$categories[] = $category->category_name;
+		}
+		return $categories;
 	}
 	
-	public function getTags(){
-		
+	/**
+	 *Deletes a category from the database
+	 *@return true
+	 */
+	public function deleteCategory($categoryName){
+		$db = &$GLOBALS['db'];
+		$db->query('delete from categories where category_name=\''.$categoryName.'\'');
+		return true;
 	}
 	
 	/**
@@ -226,16 +247,110 @@ class Blog{
 		else return false;
 	}
 	
-	public function addPost($title,$body,$categories,$tags,$author, $date = FALSE){
+	public function addPost($title,$body,$categories,$author){
+		$db = &$GLOBALS['db'];
+		
+		//Check if the post exists
+		$db->query('select id from posts where
+			   title=\''.$db->clean($title).'\'
+			   and body=\''.$db->clean($body).'\'
+			   and userid = \''.$db->clean($author).'\'');
+		
+		if($db->num_rows() == 0){	
+
+			$db->query('insert into posts (title,body,userid,seourl) 
+			values (\''.$title.'\',\''.$body.'\','.$author.',
+			\''.strtolower(str_replace(' ','-',$db->clean($title))).'\')');
+			
+			
+			//Get the ID
+			$db->query('select id from posts where
+			   title=\''.$db->clean($title).'\'
+			   and body=\''.$db->clean($body).'\'
+			   and userid = \''.$db->clean($author).'\'');
+			$result = $db->obj();
+			foreach ( $result as $post){
+				$postID = $post->id;
+			}
+			
+			if(!empty($categories)){
+				$categoriesExploded = explode(",",$categories);
+				//Write the categories
+				foreach ($categoriesExploded as $category){
+						if(!$this->categoryExists(trim($category))){
+							$this->addCategory(trim($category));
+						}
+						$this->addPostToCategory($postID, trim($category));
+				}
+			}
+			return true;
+		}
+		else return false;
+		
 		
 	}
 	
-	public function modPost($idPost,$field,$modifiedField){
+	private function addCategory($categoryName){
+		$db = &$GLOBALS['db'];
+		if(!empty($categoryName))
+			$db->query('insert into categories (category_name) values 
+						(\''.$db->clean($categoryName).'\')');
+
+	}
+	
+	private function addPostToCategory($postID, $categoryName){
+		$db = &$GLOBALS['db'];
+		$db->query('select postid from posts_categories where postid='.$postID.' and categoryid='.$categoryName);
+		if($db->num_rows() == 0){
+			$db->query('insert into posts_categories (postid,categoryid)
+			   values ('.$postID.',
+			   (select id from categories where category_name = \''.$categoryName.'\'))');
+		}
 		
 	}
 	
-	public function delPost($idPost){
+	private function clearCategoriesFromPost($idPost){
+		$db = &$GLOBALS['db'];
+		$db->query('delete from posts_categories where postid='.$idPost);
+	}
+	
+	private function categoryExists($categoryName){
+		$db = &$GLOBALS['db'];
+		$db->query('select id from categories where category_name=\''.$categoryName.'\'');
+		if($db->num_rows() == 0){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
+	public function modPost($idPost,$title,$body,$categories,$author){
+		$db = &$GLOBALS['db'];
+		$db->query('update posts set title=\''.$db->clean($title).'\',body=\''.$db->clean($body).'\',
+			   userid=\''.$db->clean($author).'\' where id=\''.$db->clean($idPost).'\'');
 		
+		if(!empty($categories)){
+			$this->clearCategoriesFromPost($idPost);
+			$categoriesExploded = explode(",",$categories);
+			//Write the categories
+			foreach ($categoriesExploded as $category){
+				if(!$this->categoryExists(trim($category))){
+					$this->addCategory(trim($category));
+				}
+				$this->addPostToCategory($idPost, trim($category));
+			}
+		}
+		else {
+			$db->query('delete from posts_categories where postid='.$idPost);
+		}
+		return true;
+	}
+	
+	public function deletePost($idPost){
+		$db = &$GLOBALS['db'];
+		$db->query('delete from posts where id = '.$db->clean($idPost));
+		return true;
 	}
 	
 	public function delComment($idComment){

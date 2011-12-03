@@ -98,8 +98,7 @@ class Users {
         $db = &$GLOBALS['db'];
 
         $db->query('select id,username,password,name,lastname,IP,location,birthdate,email from users');
-        echo '<br>Number of users = ' . $db->num_rows();
-        $db->debug('result');
+        return $db->obj();
     }
 
     public function deleteUser($idUser) {

@@ -23,6 +23,8 @@ if ($section != 'client') {
             include 'views/admin/admin_blog_view.php';
         else if ($settings->urlParameters(3) == 'client')
             include 'views/admin/admin_client_view.php';
+        else if ($settings->urlParameters(3) == 'users')
+            include 'views/admin/admin_users_view.php';
     }
     else if ($section == 'user') {
         if ($settings->urlParameters(2) == 'user')
