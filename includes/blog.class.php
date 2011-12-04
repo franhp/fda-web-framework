@@ -325,6 +325,10 @@ class Blog{
 		}
 	}
 	
+	/**
+	 *Modifies a post
+	 *@return true
+	 */
 	public function modPost($idPost,$title,$body,$categories,$author){
 		$db = &$GLOBALS['db'];
 		$db->query('update posts set title=\''.$db->clean($title).'\',body=\''.$db->clean($body).'\',
@@ -347,14 +351,35 @@ class Blog{
 		return true;
 	}
 	
+	/**
+	 *Deletes a post
+	 *@return true
+	 */
 	public function deletePost($idPost){
 		$db = &$GLOBALS['db'];
 		$db->query('delete from posts where id = '.$db->clean($idPost));
 		return true;
 	}
 	
+	/**
+	 *Deletes a comment
+	 *@return true
+	 */
 	public function delComment($idComment){
-		
+		$db = &$GLOBALS['db'];
+		$db->query('delete from comments where id = '.$db->clean($idComment));
+		return true;
+	}
+	
+	/**
+	 *Returns a list of the comments
+	 *@return stdClass
+	 */
+	public function getComments(){
+		$db = &$GLOBALS['db'];
+		$db->query('select users.username,comments.id,comments.comment,comments.date from comments, users
+			   where comments.userid=users.id order by comments.date');
+		return $db->obj();
 	}
 	
 	public function searchPost($string){

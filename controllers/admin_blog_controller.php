@@ -30,4 +30,9 @@ else if(!empty($_POST['categoryDelete'])){
     else echo 'There was a problem';
 }
 
+else if(!empty($_POST['commentDelete'])){
+    if($blog->delComment($_POST['commentDelete'])) echo 'OK';
+    else echo 'There was a problem';
+}
+
 ?>

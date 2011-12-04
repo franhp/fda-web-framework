@@ -10,12 +10,35 @@ form_decorator();
     <ul>
         <li><a href="#tabs-1">Posts</a></li>
         <li><a href="#tabs-2">Add</a></li>
+        <li><a href="#tabs-4">Comments</a></li>
         <li><a href="#tabs-3">Categories</a></li>
     </ul>
     ';
     
-    echo '<div id="tabs-3">';
     
+    echo '<div id="tabs-4">';
+    echo '<ul>';
+    foreach($blog->getComments() as $com){
+        echo '<li id="comment'.$com->id.'">'.$com->comment.' - <i> by '.$com->username.'</i><img src="'.$settings->siteurl.'/img/admin/delete.gif" onclick="
+         $.ajax({
+                    type: \'POST\',
+                    url: \'' . $settings->siteurl . '/controllers/admin_blog_controller.php\' ,
+                    data:  { commentDelete : \''.$com->id.'\' },
+                    success: function(data) {
+                            if(data==\'OK\'){
+                                $(\'#comment'.$com->id.'\').hide();
+                            }
+                            else{
+                                alert(data);
+                            }
+                    }
+            });
+        "></li>';
+    }
+    echo '</ul></div>';
+    
+    
+    echo '<div id="tabs-3">';
     echo '<ul>';
     foreach($blog->getCategories() as $cat){
         echo '<li id="'.$cat.'">'.$cat.'<img src="'.$settings->siteurl.'/img/admin/delete.gif" onclick="
@@ -35,9 +58,6 @@ form_decorator();
         "></li>';
     }
     echo '</ul>';
-    
-    
-    
     echo '</div>';
 
 

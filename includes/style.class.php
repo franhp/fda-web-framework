@@ -31,7 +31,7 @@ class Style {
             array('section' => 'register', 'title' => 'Register', 'url' => '/en/register', 'show' => 'nologged'),
             array('section' => 'user', 'title' => 'User', 'url' => '/en/user', 'show' => 'logged'),
             array('section' => 'client', 'title' => 'Client', 'url' => '/en/client', 'show' => 'logged'),
-            array('section' => 'admin', 'title' => 'Admin', 'url' => '/en/admin/client', 'show' => 'logged'),
+            array('section' => 'admin', 'title' => 'Admin', 'url' => '/en/admin', 'show' => 'logged'),
             array('section' => 'login', 'title' => 'Login', 'url' => '/en/login', 'show' => 'nologged'),
             array('section' => 'login', 'title' => 'Logout', 'url' => '/en/login', 'show' => 'logged')
         );
